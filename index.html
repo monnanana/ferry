@@ -161,9 +161,12 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   #app{padding:10px;width:100%;box-sizing:border-box;overflow-x:hidden}
   /* 状态栏：两行 2x2 */
   #stats-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
-  .stat-item{flex:none;width:calc(50% - 4px);box-sizing:border-box}
-  #hp-bar-wrap{width:100%;flex:none}
-  #hp-bar{width:80px;max-width:none}
+  #stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 4px;padding:8px 10px}
+  .stat-item{flex:none;width:auto;box-sizing:border-box;justify-content:center;flex-direction:column;align-items:center;gap:2px}
+  .stat-label{font-size:10px;color:#666;display:block;text-align:center}
+  #hp-bar-wrap{display:flex;align-items:center;gap:4px}
+  #hp-bar{width:50px;flex-shrink:0}
+  #hp-val{font-size:12px}
   /* 标题 */
   #screen-title{padding:40px 16px}
   .title-main{font-size:28px;letter-spacing:3px;margin-bottom:6px}
