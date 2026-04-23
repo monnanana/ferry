@@ -10,7 +10,8 @@
 <meta property="og:type" content="website" />
 <title>最后的摆渡人</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;min-width:0}
+html,body{overflow-x:hidden;width:100%;max-width:100%}
 body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
 #app{width:800px;max-width:100%;min-width:320px;margin:0 auto;padding:20px;min-height:100vh}
 
@@ -64,7 +65,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* Choices */
 .choices{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.choice-btn{background:#111120;border:1px solid #333;border-radius:6px;padding:14px 18px;text-align:left;cursor:pointer;transition:all 0.3s;font-family:inherit;color:#e0e0e0;font-size:14px}
+.choice-btn{background:#111120;border:1px solid #333;border-radius:6px;padding:14px 18px;text-align:left;cursor:pointer;transition:all 0.3s;font-family:inherit;color:#e0e0e0;font-size:14px;width:100%;word-break:break-word;overflow-wrap:break-word}
 .choice-btn:hover:not(:disabled){border-color:#00d4ff;background:#00d4ff0d;transform:translateX(4px)}
 .choice-btn:disabled{opacity:0.4;cursor:not-allowed}
 .choice-btn .choice-title{font-size:14px;color:#fff;margin-bottom:4px}
