@@ -86,10 +86,10 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 .qty-btn:hover{border-color:#00d4ff;color:#00d4ff}
 .qty-display{min-width:24px;text-align:center;font-size:14px}
 .shop-total{background:#111120;border:1px solid #ffcc0033;border-radius:8px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.shop-money-row{display:flex;flex-direction:row;gap:0;border-bottom:1px solid #1a2a3a;margin-bottom:12px;padding-bottom:12px;width:100%}
-.shop-money{flex:1;text-align:center;font-size:14px;border-right:1px solid #1a2a3a;padding:4px 0}
+.shop-money-row{display:flex;flex-direction:row;border-bottom:1px solid #1a2a3a;margin-bottom:12px;padding-bottom:12px;width:100%;overflow:hidden}
+.shop-money{flex:1;min-width:0;text-align:center;border-right:1px solid #1a2a3a;padding:4px 2px}
 .shop-money:last-child{border-right:none}
-.shop-money .lbl{display:block;color:#888;font-size:11px;margin-bottom:4px;white-space:nowrap}
+.shop-money .lbl{display:block;color:#888;font-size:11px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .shop-money .val{display:block;color:#ffcc00;font-size:18px;font-weight:bold}
 
 /* Items bar */
