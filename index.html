@@ -519,7 +519,8 @@ function buildShop(){
   const r=ROLES[G.role];
   if(!r)return;
   document.getElementById('shop-money-display').textContent='¥'+G.money;
-  document.getElementById('starter-items-text').textContent=r.starterText;
+  const starterEl=document.getElementById('starter-items-text');
+  if(starterEl)starterEl.textContent=r.starterText;
   SHOP_ITEMS.forEach(it=>shopQty[it.key]=0);
   renderShop();
 }
