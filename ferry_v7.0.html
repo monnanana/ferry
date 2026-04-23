@@ -421,7 +421,7 @@ function goScreen(name){
   // 开始页和角色选择页隐藏状态栏
   const hideBarScreens=['start','role'];
   const statsBar=document.getElementById('stats-bar');
-  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':'grid';
+  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':(window.innerWidth<=480?'grid':'flex');
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
