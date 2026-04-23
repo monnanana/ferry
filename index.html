@@ -1448,7 +1448,14 @@ function showEnding(type){
   const heard=G.choices.heardBox;
   const fed=G.choices.babyFed;
   let profileText='';
-  if(fed&&toldDad&&forKid){profileText='「你不是一个好的走私犯，但你是一个好人。」';}
+  const isBadEnd=['surrounded','caught','death','betrayer'].includes(type);
+  if(isBadEnd){
+    if(type==='surrounded'){profileText='「警报响彻整个航道。没有出路了。」';}
+    else if(type==='caught'){profileText='「时间耗尽，一切戛然而止。」';}
+    else if(type==='death'){profileText='「你没能走到终点。」';}
+    else if(type==='betrayer'){profileText='「你做了选择，代价由别人承担。」';}
+  }
+  else if(fed&&toldDad&&forKid){profileText='「你不是一个好的走私犯，但你是一个好人。」';}
   else if(!fed&&!toldDad&&rejected){profileText='「你完成了任务，但你始终和这件事保持着距离。」';}
   else if(fed&&!toldDad){profileText='「你照顾了孩子，但没有告诉父亲。有时候，好心也是一种回避。」';}
   else if(!fed&&toldDad){profileText='「你告诉了父亲真相，但没有照顾好孩子。信息和责任，你只选了一半。」';}
