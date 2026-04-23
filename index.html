@@ -990,8 +990,9 @@ function scene9_5_fuel(){
 // ── FLIGHT SEGMENT 4: 引擎颤抖 ───────────────────────────────────────────
 function flight_segment4(next){
   if(ended())return;
+  if(modTime(-5))return; // 飞行基础时间消耗
   showScene('// FLIGHT-4 · 引擎颤抖',
-    '引擎开始轻微颤抖。一级警报。\n正常航线上，自动修复程序会被触发。\n但你不在正常航线上。没有人知道你在哪里，也没有人会来。\n你独自在黑暗里，和一件不该存在的东西，以及一艘开始抖动的飞船。'+hpWarning()+timeWarning(),
+    '引擎开始轻微颤抖。一级警报。\n正常航线上，自动修复程序会被触发。\n但你不在正常航线上。没有人知道你在哪里，也没有人会来。\n你独自在黑暗里，和一件不该存在的东西，以及一艘开始抖动的飞船。\n\n【飞行消耗：⏱ 时间 -5min】'+hpWarning()+timeWarning(),
     [
       {title:'手动降低引擎功率，减速检查',hint:'谨慎处理，减少风险',cost:'⏱ 时间 -10min · 体力 -5',action:()=>{
         if(modHP(-5))return;if(modTime(-10))return;
@@ -1037,11 +1038,12 @@ function scene9_7_fatigue(){
 // ── FLIGHT SEGMENT 5: 幻觉 ───────────────────────────────────────────────
 function flight_segment5(next){
   if(ended())return;
+  if(modTime(-5))return; // 飞行基础时间消耗
   if(modHP(-8))return; // fatigue cost — 长途飞行消耗
   G.babyHealth=Math.max(G.babyHealth-15,0); // 长时间飞行，婴儿状态持续下降
   const figure=getRoleMonologue(5);
   const babyHint=G.babyHealth<40?'\n\n货舱里偶尔传来很轻的动静——不像哭声，更像是某种微弱的、持续的努力。':'';
-  const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n【长途飞行消耗：体力 -8】\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
+  const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n【长途飞行消耗：⏱ 时间 -5min · 体力 -8】\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
   showScene('// FLIGHT-5 · 幻觉',narr,[
     {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',action:()=>{
       if(modAlert(1))return;
