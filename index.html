@@ -157,39 +157,55 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* 手机（480px以下） */
 @media(max-width:480px){
-  #app{padding:8px}
-  /* 状态栏：两行 */
+  html,body{overflow-x:hidden;width:100%}
+  #app{padding:10px;width:100%;box-sizing:border-box;overflow-x:hidden}
+  /* 状态栏：两行 2x2 */
   #stats-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
-  .stat-item{flex:none;min-width:calc(50% - 6px)}
-  #hp-bar-wrap{min-width:100%;flex:none}
-  #hp-bar{width:100%;max-width:none}
+  .stat-item{flex:none;width:calc(50% - 4px);box-sizing:border-box}
+  #hp-bar-wrap{width:100%;flex:none}
+  #hp-bar{width:80px;max-width:none}
   /* 标题 */
+  #screen-title{padding:40px 16px}
   .title-main{font-size:28px;letter-spacing:3px;margin-bottom:6px}
   .title-sub{font-size:13px;letter-spacing:2px;margin-bottom:40px}
-  .btn-start{padding:12px 32px;font-size:15px}
+  .btn-start{padding:12px 32px;font-size:15px;width:100%;box-sizing:border-box}
   /* 角色选择：单列 */
-  .role-grid{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr;gap:10px}
+  .role-card{padding:12px}
+  .role-bg{display:none}/* 手机隐藏长背景文字，保持卡片紧凑 */
   /* 商店：单列 */
   .shop-grid{grid-template-columns:1fr}
   /* 叙事 */
-  .narr-box{padding:14px;font-size:13px;min-height:80px}
-  .choice-btn{padding:12px 12px;font-size:13px}
-  .choice-btn .choice-title{font-size:13px}
+  .narr-box{padding:14px 12px;font-size:14px;min-height:auto;word-break:break-all;overflow-wrap:break-word}
+  #typewriter-text{word-break:break-all;overflow-wrap:break-word}
+  .choice-btn{padding:12px;font-size:13px;word-break:break-all}
+  .choice-btn .choice-title{font-size:14px}
+  .choice-btn .choice-hint{font-size:12px}
+  .choices{gap:8px}
   /* 休息站 */
   .rest-option{flex-direction:column;align-items:flex-start;gap:4px}
-  .rest-opt-right{margin-left:0}
+  .rest-opt-right{margin-left:0;font-size:12px}
   /* 结局 */
   .ending-stats{gap:12px}
-  .end-stat .val{font-size:16px}
+  .end-stat .val{font-size:18px}
   .ending-title{font-size:22px;letter-spacing:2px}
+  .ending-text{padding:14px 12px;font-size:13px}
+  /* 物品栏 */
+  .item-tags{gap:4px}
+  .item-tag{font-size:11px;padding:3px 8px}
+  /* 商店 */
+  .shop-total{flex-direction:column;gap:8px;align-items:flex-start}
 }
 
 /* 超小屏（360px以下） */
 @media(max-width:360px){
+  #app{padding:8px}
   .title-main{font-size:22px;letter-spacing:2px}
   .stat-item{font-size:11px}
   .stat-label{font-size:10px}
   #alert-badge{font-size:10px;padding:2px 5px}
+  .narr-box{padding:12px 10px;font-size:13px}
+  .choice-btn{padding:10px}
 }
 </style>
 </head>
