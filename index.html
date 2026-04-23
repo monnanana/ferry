@@ -1115,7 +1115,8 @@ function scene_client_betrayal(boxMsg){
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
       }},
-      {title:'假装信号不好，没收到',hint:'沉默也是一种拒绝',cost:'无消耗',action:()=>{
+      {title:'假装信号不好，没收到',hint:'委托人不确定你的态度，更加警惕',cost:'⚠ 警戒 +2',action:()=>{
+        if(modAlert(2))return;
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
       }},
