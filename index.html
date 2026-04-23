@@ -57,7 +57,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* Narrative */
 #screen-story,#screen-scene{padding:10px 0}
-.narr-box{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:24px;margin-bottom:20px;min-height:120px;line-height:1.8;font-size:15px;position:relative}
+.narr-box{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:24px;margin-bottom:20px;min-height:120px;line-height:1.8;font-size:15px;position:relative;overflow:hidden;width:100%;box-sizing:border-box}
 .narr-box .scene-tag{font-size:11px;color:#00d4ff;letter-spacing:2px;margin-bottom:12px;display:block}
 #typewriter-text{white-space:pre-wrap;width:100%;display:block;word-break:break-word;overflow-wrap:break-word}
 .cursor{display:inline-block;width:2px;height:16px;background:#00d4ff;animation:blink 0.8s infinite;vertical-align:middle;margin-left:2px}
@@ -304,13 +304,13 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
         <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
       </div>
     </div>
-    <div class="shop-grid" id="shop-grid"></div>
-    <div id="role-starter-items" style="margin-bottom:16px;background:#111120;border:1px solid #00d4ff22;border-radius:8px;padding:14px;font-size:13px;color:#888">
-      <span style="color:#00d4ff">初始装备：</span><span id="starter-items-text"></span>
-    </div>
     <div style="font-size:12px;color:#ff6b2b;margin-bottom:12px;padding:10px 14px;border:1px solid #ff6b2b33;border-radius:6px;background:#ff6b2b0a;">
       ⚠ 途中会遇到检查站、巡逻队、突发危机，资金、物品、体力都可能是出路——也可能都不够用。
     </div>
+    <div id="role-starter-items" style="margin-bottom:16px;background:#111120;border:1px solid #00d4ff22;border-radius:8px;padding:10px 14px;font-size:12px;color:#888">
+      <span style="color:#00d4ff">初始装备：</span><span id="starter-items-text"></span>
+    </div>
+    <div class="shop-grid" id="shop-grid"></div>
     <button class="btn-leave" onclick="startGame()">装备完毕，出发 →</button>
   </div>
 
