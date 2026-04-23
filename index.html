@@ -14,7 +14,7 @@
 <title>最后的摆渡人</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;min-width:0}
-body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;overflow-x:hidden}
+body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
 #app{width:800px;max-width:100%;min-width:320px;margin:0 auto;padding:20px;min-height:100vh}
 
 /* Stats Bar */
@@ -494,7 +494,7 @@ function confirmRole(){
   if(!selectedRole){alert('请先选择角色！');return;}
   const r=ROLES[selectedRole];
   G.role=selectedRole;G.hp=r.hp;G.money=r.money;
-  G.items={};G.clues=[];G.alert=1;G.time=100;
+  G.items={};G.clues=[];G.alert=1;G.time=90;
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false,forChildScore:false};
   G.oxygenUsed=false;G.fuelChecked=false;G.lastCrisis=false;G.passedRest1=false;
   _dtrig=false;_ctrig=false;_strig=false;
