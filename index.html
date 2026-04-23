@@ -418,10 +418,10 @@ function goScreen(name){
   if(!target){console.error('[goScreen] 找不到元素: screen-'+name);return;}
   target.classList.add('active');
   // 开始页和角色选择页隐藏状态栏
-  // 只有出发后的游戏页面才显示状态栏，开始/角色选择/补给站/结局页面均隐藏
-  const showBarScreens=['story','ending'];
+  // 状态栏由各场景函数自行控制显示，goScreen 只负责在非游戏页隐藏
+  const hideBarScreens=['start','role','shop','ending'];
   const statsBar=document.getElementById('stats-bar');
-  if(statsBar) statsBar.style.display=showBarScreens.includes(name)?(window.innerWidth<=480?'grid':'flex'):'none';
+  if(statsBar && hideBarScreens.includes(name)) statsBar.style.display='none';
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
@@ -712,6 +712,11 @@ function flyTransit(cost,label,then){
 }
 // ── SCENE 4: DEPARTURE ───────────────────────────────────────────────────
 function scene4_departure(){
+  // 出发时才显示状态栏
+  const sb=document.getElementById('stats-bar');
+  if(sb) sb.style.display=window.innerWidth<=480?'grid':'flex';
+  const ib=document.getElementById('items-bar');
+  if(ib) ib.style.display='block';
   showScene('// ZONE-1 · 出发',
     '穿梭机引擎嗡嗡启动，排气管喷出蓝色火焰。\n整个城市还在沉睡——只有你醒着，把一切押上了。\n轨道高速路上，联邦检查站的探照灯每隔三公里刺穿黑暗一次。\n你看了一眼货舱里的箱子。它比任何货物都要沉重。\n主干道信标密集，但速度快；废弃航道没有人，但绕路费时间。\n每一分钟都有代价。你握紧操控杆，选择路线。'+hpWarning()+timeWarning(),
     [
