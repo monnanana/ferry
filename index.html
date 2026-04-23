@@ -343,7 +343,7 @@ const G={role:null,hp:100,time:90,alert:1,money:0,items:{},clues:[],choices:{},s
 };
 const ROLES={
 zero:{id:'zero',name:'零 Zero',nameEn:'少女·暗影',hp:85,money:80,style:'隐匿疾走',ability:'可钻通风道/藏入货柜绕过检查站',bg:'十九岁，在城市管道和缝隙里活了五年，没有档案、没有地址。今晚第一次接了个"不要问里面是什么"的任务。',starter:{'隐身披风':1},starterText:'隐身披风 ×1'},
-chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:140,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
+chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:160,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
 vera:{id:'vera',name:'维拉 Vera',nameEn:'前联邦官员',hp:75,money:100,style:'权威伪装',ability:'持有联邦证件（2次），可强制通过检查',bg:'联邦第七区前行政官，直到她在净化名单上看到了一个名字——一个不该出现在那张表格上的名字。她带走证件，联系地下网络，开始赎罪。',starter:{'联邦证件':2},starterText:'联邦证件 ×2'},
 seven:{id:'seven',name:'七 Seven',nameEn:'网络幽灵',hp:70,money:90,style:'科技制胜',ability:'可入侵系统删除记录/开门',bg:'黑网上没有真实档案的幽灵。用终端扫描过箱子，确认了生命迹象。报酬不是钱——是某份解密档案里记载的一个名字。',starter:{'黑客终端':1},starterText:'黑客终端 ×1'},
 eun:{id:'eun',name:'恩 Eun',nameEn:'战地医疗兵',hp:80,money:90,style:'持久续航',ability:'额外医疗资源，可应急救治自身及货物',bg:'前联邦卫生兵，战场规则只有一条：伤者必救，不论立场。一个女人抱着箱子来求她，她打开急救包，出发了。',starter:{'急救包':2,'镇静剂':1},starterText:'急救包 ×2，镇静剂 ×1'}
@@ -1099,7 +1099,7 @@ function _scene10_inner(){
         {title:'强行冲过去',hint:'暴力突破，但代价惨烈',cost:'体力 -20 · 警戒 +1',action:()=>{if(modHP(-20))return;if(modAlert(1))return;scene11_box();}},
         ...(G.role==='zero'?[{title:'零专属：关闭所有信号漂移',hint:'让飞船从雷达上消失',cost:'⏱ 时间 -5min · 警戒 -1',special:true,action:()=>{if(modTime(-5))return;modAlert(-1);scene11_box();}}]:[]),
         ...(G.role==='chen'?[{title:'陈叔专属：老关系',hint:'认识这家公司的人',cost:'¥80',special:true,disabled:G.money<80,action:()=>{modMoney(-80);scene11_box();}}]:[]),
-        ...(G.role==='vera'?[{title:'维拉专属：联邦证件施压',hint:'联邦权威压过私企',cost:'证件 -1次'+(hasItem('联邦证件')?'':'（已用完）'),special:true,disabled:!hasItem('联邦证件'),action:()=>{useItem('联邦证件');scene11_box();}}]:[]),
+        ...(G.role==='vera'?[{title:'维拉专属：联邦证件施压',hint:'联邦权威压过私企',cost:'⏱ 时间 -8min · 证件 -1次'+(hasItem('联邦证件')?'':'（已用完）'),special:true,disabled:!hasItem('联邦证件'),action:()=>{if(modTime(-8))return;useItem('联邦证件');scene11_box();}}]:[]),
         ...(G.role==='seven'?[{title:'七专属：入侵巡逻舰导航',hint:'让他们的舰跑偏',cost:'70%成功率',special:true,disabled:!hasItem('黑客终端'),action:()=>{if(Math.random()<0.7){scene11_box();}else{if(modAlert(1))return;if(modHP(-15))return;showScene('// 入侵失败','他们检测到入侵，开了一炮。\n飞船受损，但你还是跑了。'+hpWarning()+timeWarning(),[{title:'继续',action:scene11_box}]);}}}]:[]),
         ...(G.role==='eun'?[{title:'恩专属：伪装医疗紧急运输',hint:'医疗飞船有豁免权',cost:'急救包 -1（道具）'+(hasItem('急救包')?'':'（无急救包）'),special:true,disabled:!hasItem('急救包'),action:()=>{useItem('急救包');scene11_box();}}]:[])
       ])
@@ -1193,7 +1193,7 @@ function scene12_gate7(boxMsg){
       ...(G.role==='chen'&&G.clues.includes('内鬼名单')?[{title:'陈叔专属：用内鬼名单要挟',hint:'你知道他们内部有谁是叛徒',cost:'⏱ 时间 -15min · 警戒 -1',special:true,action:()=>{if(modTime(-15))return;G.alert=Math.max(G.alert-1,1);scene13_ending();}}]:[]),
       ...(G.clues.includes('陌生人情报')?[{title:'用情报换通行——那个陌生人的信息',hint:'你一直没用上的那份情报，现在有用了',cost:'警戒 -1 · ⏱ 时间 -10min',action:()=>{G.alert=Math.max(G.alert-1,1);if(modTime(-10))return;scene13_ending();}}]:[]),
       ...(G.clues.includes('废弃区有人活动')?[{title:'声称发现废弃区异常活动，申请紧急通道',hint:'用你掌握的情报换优先通行权',cost:'⏱ 时间 -10min · 跳过扫描',action:()=>{if(modTime(-10))return;scene13_ending();}}]:[]),
-      ...(G.role==='vera'&&hasItem('联邦证件')?[{title:'维拉专属：最后的证件',hint:'把最后一次机会用在最关键的地方',cost:'证件 -1次 · 强制通过',special:true,action:()=>{useItem('联邦证件');scene13_ending();}}]:[]),
+      ...(G.role==='vera'&&hasItem('联邦证件')?[{title:'维拉专属：最后的证件',hint:'把最后一次机会用在最关键的地方',cost:'⏱ 时间 -8min · 证件 -1次 · 强制通过',special:true,action:()=>{if(modTime(-8))return;useItem('联邦证件');scene13_ending();}}]:[]),
       ...(G.role==='seven'?[{title:'七专属：入侵Gate-7主控',hint:'从内部打开闸门',cost:'75%成功率',special:true,disabled:!hasItem('黑客终端'),action:()=>{if(Math.random()<0.75){scene13_ending();}else{if(modAlert(1))return;if(modHP(-20))return;showScene('// 系统反制','他们的AI检测到入侵并反击，黑客终端被烧毁！\n你被击中，但强行冲了过去。'+hpWarning()+timeWarning(),[{title:'继续',action:scene13_ending}]);}}}]:[]),
       ...(G.choices.helpedOldMan ? [{
       title: '老人的后人认出了你',
