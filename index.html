@@ -338,7 +338,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   </div>
 </div>
 <script>
-const G={role:null,hp:100,time:100,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,
+const G={role:null,hp:100,time:100,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,_hpWarnShown:false,_timeWarnShown:false,
   babyHealth:100, // 货物状态：100=正常，60=异常，30=危险，0=...
   babyFed:0,      // 货物获得照料次数
   // narrative choice flags:
@@ -569,13 +569,13 @@ function getRoleMonologue(segment){
 }
 // ── HP / TIME WARNINGS ───────────────────────────────────────────────────
 function hpWarning(){
-  if(G.hp<30) return '\n\n⚠ 你感到头晕，手开始颤抖。体力已经接近极限。';
-  if(G.hp<50) return '\n\n⚡ 你感到疲惫，身体在透支中勉强维持。';
+  if(G.hp<30&&!G._hpWarnShown){G._hpWarnShown=true;return '\n\n⚠ 你感到头晕，手开始颤抖。体力已经接近极限。';}
+  if(G.hp<50&&!G._hpWarnShown){G._hpWarnShown=true;return '\n\n⚡ 你感到疲惫，身体在透支中勉强维持。';}
   return '';
 }
 function timeWarning(){
-  if(G.time<30) return '\n\n⚠ 时间窗口即将关闭。追兵已经在路上了。';
-  if(G.time<50) return '\n\n⏳ 时间所剩不多，每一分钟都在流失。';
+  if(G.time<30&&!G._timeWarnShown){G._timeWarnShown=true;return '\n\n⚠ 时间窗口即将关闭。追兵已经在路上了。';}
+  if(G.time<50&&!G._timeWarnShown){G._timeWarnShown=true;return '\n\n⏳ 时间所剩不多，每一分钟都在流失。';}
   return '';
 }
 // 婴儿健康状态——叙事化，不显示数字
@@ -1046,17 +1046,18 @@ function flight_segment5(next){
   const babyHint=G.babyHealth<40?'\n\n货舱里偶尔传来很轻的动静——不像哭声，更像是某种微弱的、持续的努力。':'';
   const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n【长途飞行消耗：⏱ 时间 -5min · 体力 -8】\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
   showScene('// FLIGHT-5 · 幻觉',narr,[
-    {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',cost:'⚠ 警戒 +1（声音引起注意）',action:()=>{
-      if(modAlert(1))return;
+    {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',action:()=>{
+      G.choices.forMoney=true;
       showScene('// 你大声说了','你说了实话。\n飞行轨迹短暂偏移——声音太大，手抖了一下。\n那张脸没有反应，只是还在那里。\n你不确定你说的是不是真的。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
     {title:'「值得。」',hint:'你没有说为了什么，但你哭了',action:()=>{
+      G.choices.admittedWorth=true;
       G.choices.forChild=true;
       G.choices.forChildScore=true;
       showScene('// 你哭了','你没有解释原因。\n那张脸不说话了，但也没有消失。\n你擦掉眼泪，继续飞。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
-    {title:'「不知道。先活下去再说。」',hint:'你在黑暗里漂了一会儿',cost:'⏱ 时间 -15min（发呆太久）',action:()=>{
-      if(modTime(-15))return;
+    {title:'「不知道。先活下去再说。」',hint:'你在黑暗里漂了一会儿',action:()=>{
+      G.choices.uncertain=true;
       showScene('// 你漂了一会儿','你关掉了所有不必要的仪表灯，在黑暗里坐了一段时间。\n没有答案，但你需要这段沉默。\n然后重新打开引擎，继续飞。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
     {title:'「闭嘴。」',hint:'你不接受这个问题',action:()=>{
@@ -1457,6 +1458,9 @@ function showEnding(type){
     else if(type==='betrayer'){profileText='「你做了选择，代价由别人承担。」';}
   }
   else if(fed&&toldDad&&forKid){profileText='「你不是一个好的走私犯，但你是一个好人。」';}
+  else if(G.choices.forMoney&&!forKid){profileText='「你很清楚自己为什么在这里。钱。就这样。有时候，这种清醒也是一种诚实。」';}
+  else if(G.choices.admittedWorth&&forKid){profileText='「你哭了，但没有停下来。这条路上，这已经是全部的答案了。」';}
+  else if(G.choices.uncertain){profileText='「你没有答案。但你还在飞。有时候，这就够了。」';}
   else if(!fed&&!toldDad&&rejected){profileText='「你完成了任务，但你始终和这件事保持着距离。」';}
   else if(fed&&!toldDad){profileText='「你照顾了孩子，但没有告诉父亲。有时候，好心也是一种回避。」';}
   else if(!fed&&toldDad){profileText='「你告诉了父亲真相，但没有照顾好孩子。信息和责任，你只选了一半。」';}
@@ -1493,7 +1497,7 @@ function showEnding(type){
 // ── RESTART ───────────────────────────────────────────────────────────────
 function restartGame(){
   Object.keys(shopQty).forEach(k=>shopQty[k]=0);
-  Object.assign(G,{role:null,hp:100,time:100,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
+  Object.assign(G,{role:null,hp:100,time:100,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0,_hpWarnShown:false,_timeWarnShown:false});
   // Reset narrative choice flags
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,forChildScore:false,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false};
   _dtrig=false;_ctrig=false;_strig=false;
