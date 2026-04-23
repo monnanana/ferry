@@ -357,7 +357,7 @@ const SHOP_ITEMS=[
 {key:'干扰器',price:50,desc:'屏蔽一次扫描，警戒不升'}
 ];
 function hasItem(k,n=1){return(G.items[k]||0)>=n;}
-function useItem(k,n=1){if(hasItem(k,n)){G.items[k]-=n;if(G.items[k]<=0)delete G.items[k];return true;}return false;}
+function useItem(k,n=1){if(hasItem(k,n)){G.items[k]-=n;if(G.items[k]<=0)delete G.items[k];updateStats();return true;}return false;}
 function addItem(k,n=1){G.items[k]=(G.items[k]||0)+n;}
 function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 function modHP(d){G.hp=clamp(G.hp+d,0,100);updateStats();if(G.hp<=0){triggerDeath();return true;}return false;}
