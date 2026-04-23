@@ -304,13 +304,10 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
         <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
       </div>
     </div>
-    <div style="font-size:12px;color:#ff6b2b;margin-bottom:12px;padding:10px 14px;border:1px solid #ff6b2b33;border-radius:6px;background:#ff6b2b0a;">
-      ⚠ 途中会遇到检查站、巡逻队、突发危机，资金、物品、体力都可能是出路——也可能都不够用。
-    </div>
-    <div id="role-starter-items" style="margin-bottom:16px;background:#111120;border:1px solid #00d4ff22;border-radius:8px;padding:10px 14px;font-size:12px;color:#888">
-      <span style="color:#00d4ff">初始装备：</span><span id="starter-items-text"></span>
-    </div>
     <div class="shop-grid" id="shop-grid"></div>
+    <div style="font-size:12px;color:#ff6b2b;margin-bottom:12px;padding:10px 14px;border:1px solid #ff6b2b33;border-radius:6px;background:#ff6b2b0a;">
+      ⚠ 出发前确认：资金、物品、体力都可能是出路，也可能都不够用。没有最优解，只有你的判断。
+    </div>
     <button class="btn-leave" onclick="startGame()">装备完毕，出发 →</button>
   </div>
 
@@ -485,7 +482,7 @@ function confirmRole(){
   if(!selectedRole){alert('请先选择角色！');return;}
   const r=ROLES[selectedRole];
   G.role=selectedRole;G.hp=r.hp;G.money=r.money;
-  G.items={};G.clues=[];G.alert=1;G.time=120;
+  G.items={};G.clues=[];G.alert=1;G.time=90;
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false,forChildScore:false};
   G.oxygenUsed=false;G.fuelChecked=false;G.lastCrisis=false;G.passedRest1=false;
   _dtrig=false;_ctrig=false;_strig=false;
