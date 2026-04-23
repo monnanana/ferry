@@ -587,7 +587,7 @@ function babyStatusHint(){
 // ── RANDOM CRISIS SYSTEM ─────────────────────────────────────────────────
 function triggerRandomCrisis(nextScene){
   // 60% chance to trigger; never twice in a row
-  if(G.lastCrisis || Math.random()>0.60){G.lastCrisis=false;nextScene();return;}
+  if(G.lastCrisis || Math.random()>0.40){G.lastCrisis=false;nextScene();return;}
   G.lastCrisis=true;
   const crises=[crisis1_engine,crisis2_drone,crisis3_oxygen,crisis4_baby,crisis5_blockade,crisis6_refugee];
   const pick=crises[Math.floor(Math.random()*crises.length)];
@@ -1360,14 +1360,19 @@ function showEnding(type){
   // 根据实际消耗动态生成代价描述（pyrrhic/failure/success时显示）
   if(['pyrrhic','failure','success'].includes(type)){
     const costs=[];
-    const hpLost=100-G.hp;
-    const timeLost=90-G.time;
-    const moneyLost=(G.role==='chen'?140:G.role==='vera'?100:G.role==='zero'?80:G.role==='seven'?90:90)-G.money;
-    if(hpLost>=60) costs.push('体力几乎耗尽');
-    else if(hpLost>=35) costs.push('体力大量消耗');
-    else if(hpLost>=15) costs.push('体力有所损耗');
-    if(timeLost>=90) costs.push('时间所剩无几');
-    else if(timeLost>=60) costs.push('时间消耗严重');
+    // [FIX] 从ROLES读初始值，避免角色数据改动后这里失准
+    const initHp=(ROLES[G.role]||{hp:100}).hp;
+    const initMoney=(ROLES[G.role]||{money:90}).money;
+    const initTime=90;
+    const hpLost=initHp-G.hp;
+    const timeLost=initTime-G.time;
+    const moneyLost=initMoney-G.money;
+    if(hpLost>=initHp*0.7) costs.push('体力几乎耗尽');
+    else if(hpLost>=initHp*0.4) costs.push('体力大量消耗');
+    else if(hpLost>=initHp*0.2) costs.push('体力有所损耗');
+    // [FIX] 阈值改为相对比例，避免timeLost>=90永远不触发（初始就是90）
+    if(timeLost>=initTime*0.85) costs.push('时间所剩无几');
+    else if(timeLost>=initTime*0.6) costs.push('时间消耗严重');
     if(G.alert>=4) costs.push('警戒已达极限');
     else if(G.alert===3) costs.push('警戒险些失控');
     if(moneyLost>=100) costs.push('资金几乎耗尽');
