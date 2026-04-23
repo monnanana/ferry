@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="最后的摆渡人 · The Last Ferryman" />
+<meta property="og:description" content="2147年，封锁星域，一只箱子，一段不知终点的飞行。赛博朋克生存文字冒险。" />
+<meta property="og:image" content="https://monnanana.github.io/ferry/cover.png" />
+<meta property="og:url" content="https://monnanana.github.io/ferry/" />
+<meta property="og:type" content="website" />
 <title>最后的摆渡人</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -336,11 +341,11 @@ const G={role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},
   // heardBox,toldFather,helpedOldMan,ignoredOldMan,forChild,clientCancelled,rejectedClient,betrayedBaby,slowedEngine
 };
 const ROLES={
-zero:{id:'zero',name:'零 Zero',nameEn:'少女·暗影',hp:100,money:80,style:'隐匿疾走',ability:'可钻通风道/藏入货柜绕过检查站',bg:'十九岁，在城市管道和缝隙里活了五年，没有档案、没有地址。今晚第一次接了个"不要问里面是什么"的任务。',starter:{'隐身披风':1},starterText:'隐身披风 ×1'},
-chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:160,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
-vera:{id:'vera',name:'维拉 Vera',nameEn:'前联邦官员',hp:75,money:90,style:'权威伪装',ability:'持有联邦证件（2次），可强制通过检查',bg:'联邦第七区前行政官，直到她在净化名单上看到了一个名字——一个不该出现在那张表格上的名字。她带走证件，联系地下网络，开始赎罪。',starter:{'联邦证件':2},starterText:'联邦证件 ×2'},
-seven:{id:'seven',name:'七 Seven',nameEn:'网络幽灵',hp:70,money:120,style:'科技制胜',ability:'可入侵系统删除记录/开门',bg:'黑网上没有真实档案的幽灵。用终端扫描过箱子，确认了生命迹象。报酬不是钱——是某份解密档案里记载的一个名字。',starter:{'黑客终端':1},starterText:'黑客终端 ×1'},
-eun:{id:'eun',name:'恩 Eun',nameEn:'战地医疗兵',hp:80,money:140,style:'持久续航',ability:'额外医疗资源，可应急救治自身及货物',bg:'前联邦卫生兵，战场规则只有一条：伤者必救，不论立场。一个女人抱着箱子来求她，她打开急救包，出发了。',starter:{'急救包':2,'镇静剂':1},starterText:'急救包 ×2，镇静剂 ×1'}
+zero:{id:'zero',name:'零 Zero',nameEn:'少女·暗影',hp:85,money:80,style:'隐匿疾走',ability:'可钻通风道/藏入货柜绕过检查站',bg:'十九岁，在城市管道和缝隙里活了五年，没有档案、没有地址。今晚第一次接了个"不要问里面是什么"的任务。',starter:{'隐身披风':1},starterText:'隐身披风 ×1'},
+chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:140,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
+vera:{id:'vera',name:'维拉 Vera',nameEn:'前联邦官员',hp:75,money:100,style:'权威伪装',ability:'持有联邦证件（2次），可强制通过检查',bg:'联邦第七区前行政官，直到她在净化名单上看到了一个名字——一个不该出现在那张表格上的名字。她带走证件，联系地下网络，开始赎罪。',starter:{'联邦证件':2},starterText:'联邦证件 ×2'},
+seven:{id:'seven',name:'七 Seven',nameEn:'网络幽灵',hp:70,money:90,style:'科技制胜',ability:'可入侵系统删除记录/开门',bg:'黑网上没有真实档案的幽灵。用终端扫描过箱子，确认了生命迹象。报酬不是钱——是某份解密档案里记载的一个名字。',starter:{'黑客终端':1},starterText:'黑客终端 ×1'},
+eun:{id:'eun',name:'恩 Eun',nameEn:'战地医疗兵',hp:80,money:90,style:'持久续航',ability:'额外医疗资源，可应急救治自身及货物',bg:'前联邦卫生兵，战场规则只有一条：伤者必救，不论立场。一个女人抱着箱子来求她，她打开急救包，出发了。',starter:{'急救包':2,'镇静剂':1},starterText:'急救包 ×2，镇静剂 ×1'}
 };
 const SHOP_ITEMS=[
 {key:'食物补给',price:20,desc:'休息站使用，体力 +25'},
@@ -1345,7 +1350,7 @@ function showEnding(type){
     const costs=[];
     const hpLost=100-G.hp;
     const timeLost=120-G.time;
-    const moneyLost=(G.role==='chen'?160:G.role==='vera'?90:G.role==='zero'?80:G.role==='seven'?120:140)-G.money;
+    const moneyLost=(G.role==='chen'?140:G.role==='vera'?100:G.role==='zero'?80:G.role==='seven'?90:90)-G.money;
     if(hpLost>=60) costs.push('体力几乎耗尽');
     else if(hpLost>=35) costs.push('体力大量消耗');
     else if(hpLost>=15) costs.push('体力有所损耗');
