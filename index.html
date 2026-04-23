@@ -1037,11 +1037,11 @@ function scene9_7_fatigue(){
 // ── FLIGHT SEGMENT 5: 幻觉 ───────────────────────────────────────────────
 function flight_segment5(next){
   if(ended())return;
-  if(modHP(-12))return; // fatigue cost
+  if(modHP(-8))return; // fatigue cost — 长途飞行消耗
   G.babyHealth=Math.max(G.babyHealth-15,0); // 长时间飞行，婴儿状态持续下降
   const figure=getRoleMonologue(5);
   const babyHint=G.babyHealth<40?'\n\n货舱里偶尔传来很轻的动静——不像哭声，更像是某种微弱的、持续的努力。':'';
-  const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
+  const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n【长途飞行消耗：体力 -8】\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
   showScene('// FLIGHT-5 · 幻觉',narr,[
     {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',action:()=>{
       if(modAlert(1))return;
@@ -1074,7 +1074,7 @@ function _scene9_7_inner(){
 // ── SCENE 10: CORPORATE PATROL ───────────────────────────────────────────
 function scene10_patrol(){
   if(ended())return;
-  flight_segment6(()=>{if(ended())return;if(modHP(-8))return;if(modTime(-15))return;_scene10_inner();});
+  flight_segment6(()=>{if(ended())return;_scene10_inner();});
 }
 // ── FLIGHT SEGMENT 6: 终点在望 ───────────────────────────────────────────
 function flight_segment6(next){
@@ -1082,11 +1082,11 @@ function flight_segment6(next){
   showScene('// FLIGHT-6 · 终点在望',
     'Gate-7的灯光出现在地平线上。\n你已经飞了很久了，久到忘记出发是什么感觉。\n你想起检查站外等候的那个老人，废弃区那个没有人听的频道，低氧下头疼欲裂的感觉，还有那个声音。\n货舱很安静。你不知道里面的箱子还完好不完好，里面的东西还在不在。\n但你还在飞。这就是答案。'+hpWarning()+timeWarning(),
     [
-      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静，但多花时间',cost:'体力 +5 · ⏱ 时间 -12min',action:()=>{
-        modHP(5);if(modTime(-12))return;next();
+      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静，但多花时间',cost:'体力 -3 · ⏱ 时间 -15min',action:()=>{
+        if(modHP(-3))return;if(modTime(-15))return;next();
       }},
-      {title:'「加速，越快越好」',hint:'省时间，但飞太快容易被雷达捕捉',cost:'⏱ 时间 -3min · 体力 -10 · 警戒 +1',action:()=>{
-        if(modTime(-3))return;if(modHP(-10))return;if(modAlert(1))return;next();
+      {title:'「加速，越快越好」',hint:'省时间，但飞太快容易被雷达捕捉',cost:'⏱ 时间 -8min · 体力 -10 · 警戒 +1',action:()=>{
+        if(modTime(-8))return;if(modHP(-10))return;if(modAlert(1))return;next();
       }}
     ]
   );
