@@ -711,8 +711,8 @@ function scene4_departure(){
   showScene('// ZONE-1 · 出发',
     '穿梭机引擎嗡嗡启动，排气管喷出蓝色火焰。\n整个城市还在沉睡——只有你醒着，把一切押上了。\n轨道高速路上，联邦检查站的探照灯每隔三公里刺穿黑暗一次。\n你看了一眼货舱里的箱子。它比任何货物都要沉重。\n主干道信标密集，但速度快；废弃航道没有人，但绕路费时间。\n每一分钟都有代价。你握紧操控杆，选择路线。'+hpWarning()+timeWarning(),
     [
-      {title:'走主干道',hint:'速度快，但检查站密集',cost:'⏱ 时间 -5min · ⚠ 警戒 +1 · 体力 -10',action:()=>{if(modTime(-5))return;if(modAlert(1))return;flight_segment1(()=>scene5_checkpoint('主干道'));}},
-      {title:'走废弃航道',hint:'绕远路，无监控',cost:'⏱ 时间 -15min · 警戒保持 · 体力 -10',action:()=>{if(modTime(-15))return;flight_segment1(()=>scene5_checkpoint('废弃航道'));}}
+      {title:'走主干道',hint:'速度快，但检查站密集',cost:'⏱ 时间 -5min · ⚠ 警戒 +1 · 体力 -10',action:()=>{if(modTime(-5))return;if(modAlert(1))return;if(modHP(-10))return;flight_segment1(()=>scene5_checkpoint('主干道'));}},
+      {title:'走废弃航道',hint:'绕远路，无监控',cost:'⏱ 时间 -15min · 警戒保持 · 体力 -10',action:()=>{if(modTime(-15))return;if(modHP(-10))return;flight_segment1(()=>scene5_checkpoint('废弃航道'));}}
     ]
   );
 }
@@ -763,7 +763,7 @@ function scene5_checkpoint_passage(route){
     if(G.money<50){
       // 没钱硬塞——触发盘问，警戒+1+体力消耗
       const all=G.money;modMoney(-all);
-      if(modAlert(1))return;if(modHP(-15))return;
+      if(modAlert(1))return;if(modHP(-15))return;if(modTime(-20))return;
       scene6_rest1('你把口袋里最后一点零钱都掏了出来——明显不够。\n执法官眯起眼睛，叫来了同事。\n盘问了二十分钟，最终放行，但你被记了一笔。');
     }else{modMoney(-50);scene6_rest1('贿赂顺利通过，他连箱子都没看一眼。');}
   }});
