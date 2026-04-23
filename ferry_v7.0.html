@@ -955,12 +955,12 @@ function scene8_father_reveal(){
         showScene('// 你没说','「我只是运货的，」你说，「不知道里面是什么。」\n他看了你很久。\n你飞走了。'+hpWarning()+timeWarning(),
         [{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);
       }},
-      {title:'给他你的通讯频道，说到达后联系你',hint:'给他一个可能',cost:'无消耗 · 特殊结局变体',action:()=>{
+      {title:'给他你的通讯频道，说到达后联系你',hint:'给他一个可能',cost:'无消耗',action:()=>{
         G.choices.toldFather='promised';
         showScene('// 你给了他频道','「到达后你联系我，」你说，把通讯码写在他手上，「我会告诉你结果。」\n他点了点头，什么都没说。\n但他的眼睛里有了一点光。'+hpWarning()+timeWarning(),
         [{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);
       }},
-      {title:'转身飞走，什么都不说',hint:'时间就是生命',cost:'⏱ 省下了时间',action:()=>{
+      {title:'转身飞走，什么都不说',hint:'时间就是生命',cost:'无消耗',action:()=>{
         G.choices.toldFather=false;
         triggerRandomCrisis(scene9_rest2);
       }}
@@ -1415,7 +1415,7 @@ function showEnding(type){
     }
   }
   // 根据婴儿状态追加一行结局描述
-  const babyRevealed=['miracle','success','pyrrhic','failure','puppet','betrayer'].includes(type);
+  const babyRevealed=['miracle','success','pyrrhic','failure','puppet'].includes(type);
   if(babyRevealed){
     const babyEndLine = G.babyHealth>=70 ? '<p class="dynamic-insert" style="color:#00ff8888;font-size:13px;margin-top:12px">// 货物状态良好，一路平安。</p>'
       : G.babyHealth>=40 ? '<p class="dynamic-insert" style="color:#ffcc0088;font-size:13px;margin-top:12px">// 货物有些损耗，但完好。</p>'
