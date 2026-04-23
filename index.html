@@ -339,7 +339,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   </div>
 </div>
 <script>
-const G={role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,
+const G={role:null,hp:100,time:90,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,
   babyHealth:100, // 货物状态：100=正常，60=异常，30=危险，0=...
   babyFed:0,      // 货物获得照料次数
   // narrative choice flags:
@@ -716,8 +716,7 @@ function flight_segment1(next){
   const mono=getRoleMonologue(1);
   const narr='城市在你背后缩小，成为一片光点的集合。\n7频道传来断续的歌声——不知道是谁在唱，也不知道唱给谁听。\n你把收音机关掉了。\n货舱里的箱子还没有打开过。你不打算打开它。\n不是现在。'+( mono?'\n\n'+mono:'')+babyStatusHint()+ hpWarning()+timeWarning();
   showScene('// FLIGHT-1 · 出城之夜',narr,[
-    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态，但多花时间',cost:'体力 -8 · ⏱ 时间 -15min',action:()=>{if(modHP(-8))return;if(modTime(-15))return;next();}},
-    {title:'「加速，越快越好，不想多想」',hint:'用速度逃离思绪，省时间但飞太快容易被雷达捕捉',cost:'体力 -15 · ⏱ 时间 -5min · 警戒 +1',action:()=>{if(modHP(-15))return;if(modTime(-5))return;if(modAlert(1))return;next();}}
+    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态',cost:'体力 -8 · ⏱ 时间 -10min',action:()=>{if(modHP(-8))return;if(modTime(-10))return;next();}}
   ]);
 }
 // ── SCENE 5: CHECKPOINT ALPHA ────────────────────────────────────────────
@@ -1066,11 +1065,11 @@ function flight_segment6(next){
   showScene('// FLIGHT-6 · 终点在望',
     'Gate-7的灯光出现在地平线上。\n你已经飞了很久了，久到忘记出发是什么感觉。\n你想起检查站外等候的那个老人，废弃区那个没有人听的频道，低氧下头疼欲裂的感觉，还有那个声音。\n货舱很安静。你不知道里面的箱子还完好不完好，里面的东西还在不在。\n但你还在飞。这就是答案。'+hpWarning()+timeWarning(),
     [
-      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静',cost:'体力 +5 · ⏱ 时间 -5min',action:()=>{
-        modHP(5);if(modTime(-5))return;next();
+      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静，但多花时间',cost:'体力 +5 · ⏱ 时间 -12min',action:()=>{
+        modHP(5);if(modTime(-12))return;next();
       }},
-      {title:'直接冲，不给自己犹豫的机会',hint:'一口气冲进去',cost:'警戒 +1',action:()=>{
-        if(modAlert(1))return;next();
+      {title:'「加速，越快越好」',hint:'省时间，但飞太快容易被雷达捕捉',cost:'⏱ 时间 -3min · 体力 -10 · 警戒 +1',action:()=>{
+        if(modTime(-3))return;if(modHP(-10))return;if(modAlert(1))return;next();
       }}
     ]
   );
@@ -1438,7 +1437,7 @@ function showEnding(type){
 // ── RESTART ───────────────────────────────────────────────────────────────
 function restartGame(){
   Object.keys(shopQty).forEach(k=>shopQty[k]=0);
-  Object.assign(G,{role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
+  Object.assign(G,{role:null,hp:100,time:90,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
   // Reset narrative choice flags
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,forChildScore:false,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false};
   _dtrig=false;_ctrig=false;_strig=false;
