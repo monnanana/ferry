@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta property="og:title" content="最后的摆渡人 · The Last Ferryman" />
 <meta property="og:description" content="2147年，封锁星域，一只箱子，一段不知终点的飞行。赛博朋克生存文字冒险。" />
 <meta property="og:image" content="https://monnanana.github.io/ferry/cover.png" />
@@ -13,7 +13,7 @@
 *{box-sizing:border-box;margin:0;padding:0;min-width:0}
 html,body{overflow-x:hidden;width:100%;max-width:100%}
 body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;overflow-x:hidden}
-#app{width:800px;max-width:100vw;min-width:320px;margin:0 auto;padding:20px;min-height:100vh;overflow-x:hidden}
+#app{width:100%;max-width:800px;min-width:320px;margin:0 auto;padding:20px;min-height:100vh;overflow-x:hidden;box-sizing:border-box}
 
 /* Stats Bar */
 #stats-bar{background:#111120;border:1px solid #00d4ff33;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:none;flex-wrap:nowrap;align-items:center;position:sticky;top:10px;z-index:100}
@@ -1299,7 +1299,7 @@ function showEnding(type){
   const endData={
     miracle:{icon:'✨',title:'父亲的奇迹',sub:'你送到了，他等到了',texts:{
       zero:'父亲抱着孩子，看向你。「谢谢你。」\n你想说不客气，但说不出口。\n当年把你装进箱子的人，没有人谢过他们。\n但这里有人谢了你。\n也许这就够了。'+(G.choices.toldFather?'\n\n人群里有人跑过来——是那个在航道上拦住你的男人。':'')+'\n\n//「也许这就够了。」',
-      chen:'孩子被接走的那一刻，陈叔掏出了一张旧照片。\n阿洪，年轻时候的样子，抱着一个刚出生的孩子。\n「你猜对了，」陈叔对着照片说，「是他的孩子。」\n「我替你送到了。」\n三十年，第一次觉得这行没白干。'+(G.choices.toldFather?'\n\n人群里有人跑过来——是那个在航道上拦住你的男人。':'')+'\n\n//「三十年，第一次觉得这行没白干。」',
+      chen:'孩子被接走的那一刻，陈叔掏出了一张旧照片。\n阿洪，年轻时候的样子，抱着一个刚出生的孩子。\n「你猜对了，」陈叔对着照片说，「是他的孩子。」\n「我替你送到了。」\n三十年，第一次觉得这行没白干。'+(G.choices.toldFather?'\n\n人群里有人跑过来——是阿洪。\n他认出了孩子，没有说话，只是跑过来，把孩子抱住了。\n陈叔把照片收起来，转身走向停机坪的角落。':'')+'\n\n//「三十年，第一次觉得这行没白干。」',
       vera:'父亲认出了维拉。\n他曾经站在她的办公室外面，求她不要签那张驱逐令。\n她签了。\n「是你，」他说，声音很平。\n维拉没有说话。\n有些事，说对不起也没有用。\n但她还是来了。'+(G.choices.toldFather?'\n\n人群里有人跑过来——是那个在航道上拦住你的男人。':'')+'\n\n//「有些事，说对不起也没有用。但她还是来了。」',
       seven:'父亲抱着孩子。\n七打开了那条三个月前解密的记录，删掉了它。\n孩子不需要背负那个身份。至少现在不需要。\n他关掉终端，转身离开。\n这条记录从来没有存在过。'+(G.choices.toldFather?'\n\n人群里有人跑过来——是那个在航道上拦住你的男人。':'')+'\n\n//「这条记录从来没有存在过。孩子不需要背负那个身份。至少现在不需要。」',
       eun:'父亲抱着孩子，孩子停止了哭泣。\n恩做了一次体征检查。心跳正常，体温正常。\n「会没事的，」她说，职业习惯。\n然后补了一句：「他很勇敢。一路上没有给我添麻烦。」'+(G.choices.toldFather?'\n\n人群里有人跑过来——是那个在航道上拦住你的男人。':'')+'\n\n//「他很勇敢。一路上没有给我添麻烦。」'
@@ -1327,7 +1327,7 @@ function showEnding(type){
     }},
     puppet:{icon:'🎭',title:'棋子',sub:'你完成了任务，但你也是任务的一部分',texts:{
       zero:'孩子被接走了。\n十分钟后，联邦飞船出现了。\n委托人兑现了承诺——把你卖掉，换取豁免。\n你被捕的时候，孩子已经在安全的地方了。\n你完成了任务。\n你只是没想到，自己是任务的一部分。\n又一次。',
-      chen:'三十年没被坑，今天栽了。\n孩子是安全的。这是唯一值得安慰的事。\n阿洪要是看到，大概会笑他老糊涂了。',
+      chen:'三十年没被坑，今天栽了。\n孩子是安全的。这是唯一值得安慰的事。\n阿洪还在某个航道上等消息。\n这个消息他接不到了。',
       vera:'被曾经自己亲手建立的系统出卖。\n讽刺。\n但孩子活着。\n这一点她做到了。',
       seven:'算漏了人心。\n这是他职业生涯里第一次。\n孩子是安全的。数据是准确的。\n只是他自己成了变量。',
       eun:'被骗来，又被卖掉。\n但孩子是健康的。\n这是她能确认的唯一一件事。'
@@ -1358,7 +1358,7 @@ function showEnding(type){
     }},
     death:{icon:'💀',title:'途中倒下',sub:'没能到达终点',texts:{
       zero:'零的手松开了操控杆。\n穿梭机在自动驾驶模式下缓缓漂移，没有方向。\n货舱里有声音，但她听不见了。\n那首儿歌还在废弃工厂里播放。',
-      chen:'陈叔没有想到，最后一趟是这样结束的。\n引擎还在转，但他不再握着方向盘了。\n阿洪，我没完成。',
+      chen:'陈叔没有想到，最后一趟是这样结束的。\n引擎还在转，但他不再握着方向盘了。\n阿洪还在某个航道上等着。\n这一次，没有人能告诉他消息了。',
       vera:'维拉倒在驾驶座里，看着舷窗外的星空。\n有些承诺，终究没能兑现。\n她想起了那张驱逐令。',
       seven:'七的最后一条日志只有两个字：任务——\n然后断了。\n那条记录还在终端里，等待被删除。\n没有人删了。',
       eun:'恩倒下前检查了一遍箱子。\n孩子还在呼吸。\n这让她稍微安心了一点。\n只是一点点。'
@@ -1368,7 +1368,7 @@ function showEnding(type){
       chen:'联邦巡逻舰从四面合围。陈叔叹了口气，关掉引擎。\n三十年都没被抓到，今天栽了。\n至少不是因为运普通货物。',
       vera:'门开了，她看到了曾经熟悉的制服。\n「前长官，」对方说，「请跟我们走。」\n她认识那个执法官。她给他签过晋升文件。',
       seven:'所有系统被强制切断，黑客终端发出最后一声蜂鸣。\n「游戏结束，」对方的声音透过对讲机传来。\n七想：不，只是这一局结束了。',
-      eun:'恩把箱子护在身后，面对着涌入的执法官。\n「孩子不在里面，」她撒谎，「只是药品。」\n没有人相信她。\n但她没有松手。'
+      eun:'恩把箱子护在身后，面对着涌入的执法官。\n「孩子不在里面，」她撒谎，「只是药品。」\n没有人相信她。\n但她没有松手。\n箱子里传来一声轻微的动静。'
     }},
     surrounded:{icon:'🚨',title:'围捕',sub:'警戒过高，无处可逃',texts:{
       zero:'四面全是联邦的探照灯，零被夹在中间。\n她想起了第一次在管道里奔跑的感觉。\n那时候总有出口。这次没有。',
