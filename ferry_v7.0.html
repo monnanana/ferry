@@ -940,7 +940,9 @@ function scene8_contact(){
 function scene8_father_reveal(){
   if(ended())return;
   showScene('// ZONE-2 · 他的真实身份',
-    '他的话说得很快，很混乱，但核心信息很清楚：Gate-7今晚换了扫描协议。\n他把一张手写的纸塞给你，然后——他停住了。\n\n他低头看了一眼你飞船的货舱方向。\n就那么一眼。\n\n他没有钱，没有飞船，没有通行证。\n他只是在每个可能的航道守着，等一个奇迹。\n「求你，」他说，「告诉我它还好好的。」'+hpWarning()+timeWarning(),
+    (G.role==='chen'?'那张脸。\n陈叔认出来了——是阿洪。\n不是死了，是在这里，蓬头垢面，守在每一条可能的航道上。\n他的话说得很快，很混乱，但陈叔只听见了一句话：':
+    '他的话说得很快，很混乱，但核心信息很清楚：Gate-7今晚换了扫描协议。\n他把一张手写的纸塞给你，然后——他停住了。\n')+
+    '\n他低头看了一眼你飞船的货舱方向。\n就那么一眼。\n\n他没有钱，没有飞船，没有通行证。\n他只是在每个可能的航道守着，等一个奇迹。\n「求你，」他说，「告诉我它还好好的。」'+hpWarning()+timeWarning(),
     [
       {title:'点头，让他知道',hint:'你没有说话，但他看懂了',cost:'警戒 +1（停留太久）',action:()=>{
         if(modAlert(1))return;
@@ -1131,12 +1133,12 @@ function scene_client_betrayal(boxMsg){
   showScene('// ZONE-4 · 委托人的消息',
     boxMsg+'\n\n距离Gate-7两公里。\n通讯器响了。是委托人。\n「任务取消。就地销毁货物，立刻撤离。我会额外付你三倍的钱。」\n你看向货舱。'+hpWarning()+timeWarning(),
     [
-      {title:'拒绝，继续飞',hint:'不接受',cost:'警戒 +1（委托人可能举报你）',action:()=>{
+      {title:'拒绝，继续飞',hint:'钱不重要',cost:'⚠ 警戒 +1（委托人可能举报你）',action:()=>{
         if(modAlert(1))return;
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
       }},
-      {title:'假装信号不好，没收到',hint:'委托人不确定你的态度，更加警惕',cost:'⚠ 警戒 +2',action:()=>{
+      {title:'假装信号不好，没收到',hint:'委托人不确定你的态度',cost:'⚠ 警戒 +2',action:()=>{
         if(modAlert(2))return;
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
@@ -1156,13 +1158,20 @@ function scene_client_betrayal(boxMsg){
               G.choices.rejectedClient=true;
               scene12_gate7(boxMsg);
             }},
-            {title:'接受取消，撤离',hint:'你告诉自己你没有选择',cost:'接受委托人命令',action:()=>{
+            {title:'接受取消，就此撤离',hint:'你看见了他的眼睛，但你还是选择了撤离',cost:'接受委托人命令',action:()=>{
               G.choices.rejectedClient=false;
               G.choices.betrayedBaby=true;
+              G.choices.sawBeforeBetrayal=true;
               showEnding('betrayer');
             }}
           ]
         );
+      }},
+      {title:'接受取消，直接撤离',hint:'你没有打开箱子，你告诉自己你不知道里面是什么',cost:'三倍报酬',action:()=>{
+        G.choices.rejectedClient=false;
+        G.choices.betrayedBaby=true;
+        G.choices.sawBeforeBetrayal=false;
+        showEnding('betrayer');
       }}
     ]
   );
@@ -1323,12 +1332,29 @@ function showEnding(type){
       seven:'算漏了人心。\n这是他职业生涯里第一次。\n孩子是安全的。数据是准确的。\n只是他自己成了变量。',
       eun:'被骗来，又被卖掉。\n但孩子是健康的。\n这是她能确认的唯一一件事。'
     }},
-    betrayer:{icon:'💰',title:'背叛者',sub:'你拿到了钱',texts:{
-      zero:'你拿到了钱。\n你一直告诉自己你不知道里面是什么。\n但你在废弃航道上把耳朵贴着箱壁听过。\n你知道。\n钱打进账户的提示音响了。\n你把音量调到最大。',
-      chen:'你打破了自己唯一的规矩。\n然后你用钱合理化了它。\n阿洪的遗孀还在等消息。\n你关掉了通讯器。',
-      vera:'你签过很多文件。\n这一次没有文件，只有一个动作。\n你告诉自己这和以前不一样。\n但手的动作是一样的。',
-      seven:'那条记录你没有删。\n你把它卖给了出价最高的人。\n数据就是数据。\n你一直是这样告诉自己的。\n现在你不确定了。',
-      eun:'你被骗来的。\n你离开是合理的。\n你一直这样告诉自己，直到飞出信号范围。\n职业本能在脑子里说：体征正常，无危险。\n另一个声音说：你知道那不是真的理由。'
+    betrayer:{icon:'💰',title:'背叛者',sub:'你拿到了钱',
+      getText:(G)=>{
+        const saw=G.choices.sawBeforeBetrayal;
+        const t={
+          zero: saw
+            ?'你拿到了钱。\n你看见了他的眼睛。\n三秒钟。就那么三秒钟。\n然后你合上了箱子，接受了指令。\n钱打进账户的提示音响了。\n你没有把音量调低。\n你觉得你应该受着这个声音。'
+            :'你拿到了钱。\n你一直告诉自己你不知道里面是什么。\n但你在废弃航道上把耳朵贴着箱壁听过。\n你知道。\n钱打进账户的提示音响了。\n你把音量调到最大。',
+          chen: saw
+            ?'你打破了自己唯一的规矩。\n他用两只眼睛看着你。\n你还是合上了箱子。\n阿洪还在某个航道上等消息。\n你关掉了通讯器。'
+            :'你打破了自己唯一的规矩。\n然后你用钱合理化了它。\n阿洪还在某个航道上等消息。\n你关掉了通讯器。',
+          vera: saw
+            ?'你签过很多文件。\n这一次你看见了那个不该被销毁的东西的脸。\n然后你还是做了决定。\n你告诉自己这和以前不一样。\n但结果是一样的。'
+            :'你签过很多文件。\n这一次没有文件，只有一个动作。\n你告诉自己这和以前不一样。\n但手的动作是一样的。',
+          seven: saw
+            ?'那条记录你没有删。\n你把它卖给了出价最高的人。\n你打开过箱子。你知道数据后面是什么。\n数据就是数据。\n你现在不太确定自己还相信这句话。'
+            :'那条记录你没有删。\n你把它卖给了出价最高的人。\n数据就是数据。\n你一直是这样告诉自己的。\n现在你不确定了。',
+          eun: saw
+            ?'你是医疗兵。你打开过箱子，做过体征确认。\n一切正常。\n然后你接受了取消指令。\n职业训练告诉你这不合理。\n你飞出了信号范围，假装没听见。'
+            :'你被骗来的。\n你离开是合理的。\n你一直这样告诉自己，直到飞出信号范围。\n职业本能在脑子里说：体征正常，无危险。\n另一个声音说：你知道那不是真的理由。'
+        };
+        return t[G.role]||t.zero;
+      },texts:{
+      zero:'',chen:'',vera:'',seven:'',eun:''
     }},
     death:{icon:'💀',title:'途中倒下',sub:'没能到达终点',texts:{
       zero:'零的手松开了操控杆。\n穿梭机在自动驾驶模式下缓缓漂移，没有方向。\n货舱里有声音，但她听不见了。\n那首儿歌还在废弃工厂里播放。',
@@ -1353,7 +1379,7 @@ function showEnding(type){
     }}
   };
   const ed=endData[type]||endData.failure;
-  const roleText=ed.texts[G.role]||ed.texts.zero;
+  const roleText=ed.getText?ed.getText(G):(ed.texts[G.role]||ed.texts.zero);
   document.getElementById('ending-icon').textContent=ed.icon;
   document.getElementById('ending-title').textContent=`「${ed.title}」`;
   document.getElementById('ending-subtitle').textContent=ed.sub;
