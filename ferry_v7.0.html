@@ -733,7 +733,8 @@ function scene5_checkpoint(route){
       G.choices.ignoredOldMan=true;
       scene5_checkpoint_passage(route);
     }},
-    ...(G.role==='chen'?[{title:'陈叔专属：用通讯器匿名举报检查站违规',hint:'让他们自乱阵脚',cost:'⏱ 时间 -5min',special:true,action:()=>{
+    ...(G.role==='chen'?[{title:'陈叔专属：用通讯器匿名举报检查站违规',hint:'让他们自乱阵脚',cost:'人脉通讯器 -1 · ⏱ 时间 -5min'+(hasItem('人脉通讯器')?'':' · 无通讯器'),special:true,disabled:!hasItem('人脉通讯器'),action:()=>{
+      useItem('人脉通讯器');
       if(modTime(-5))return;
       G.choices.helpedOldMan=true;
       showScene('// 匿名举报','你用通讯器发出一条匿名信息，举报该检查站有违规行为。\n对讲机里传来上级的查询声，那名执法官慌忙松开了老人。\n老人用感激的眼神望向四处，然后消失在黑暗里。'+hpWarning()+timeWarning(),
