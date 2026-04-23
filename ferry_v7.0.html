@@ -157,39 +157,58 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* 手机（480px以下） */
 @media(max-width:480px){
-  #app{padding:8px}
-  /* 状态栏：两行 */
+  html,body{overflow-x:hidden;width:100%}
+  #app{padding:10px;width:100%;box-sizing:border-box;overflow-x:hidden}
+  /* 状态栏：两行 2x2 */
   #stats-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
-  .stat-item{flex:none;min-width:calc(50% - 6px)}
-  #hp-bar-wrap{min-width:100%;flex:none}
-  #hp-bar{width:100%;max-width:none}
+  #stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 4px;padding:8px 10px}
+  .stat-item{flex:none;width:auto;box-sizing:border-box;justify-content:center;flex-direction:column;align-items:center;gap:2px}
+  .stat-label{font-size:10px;color:#666;display:block;text-align:center}
+  #hp-bar-wrap{display:flex;align-items:center;gap:4px}
+  #hp-bar{width:50px;flex-shrink:0}
+  #hp-val{font-size:12px}
   /* 标题 */
+  #screen-title{padding:40px 16px}
   .title-main{font-size:28px;letter-spacing:3px;margin-bottom:6px}
   .title-sub{font-size:13px;letter-spacing:2px;margin-bottom:40px}
-  .btn-start{padding:12px 32px;font-size:15px}
+  .btn-start{padding:12px 32px;font-size:15px;width:100%;box-sizing:border-box}
   /* 角色选择：单列 */
-  .role-grid{grid-template-columns:1fr}
+  .role-grid{grid-template-columns:1fr;gap:10px}
+  .role-card{padding:12px}
+  .role-bg{display:none}/* 手机隐藏长背景文字，保持卡片紧凑 */
   /* 商店：单列 */
   .shop-grid{grid-template-columns:1fr}
   /* 叙事 */
-  .narr-box{padding:14px;font-size:13px;min-height:80px}
-  .choice-btn{padding:12px 12px;font-size:13px}
-  .choice-btn .choice-title{font-size:13px}
+  .narr-box{padding:14px 12px;font-size:14px;min-height:auto;word-break:break-all;overflow-wrap:break-word}
+  #typewriter-text{word-break:break-all;overflow-wrap:break-word}
+  .choice-btn{padding:12px;font-size:13px;word-break:break-all}
+  .choice-btn .choice-title{font-size:14px}
+  .choice-btn .choice-hint{font-size:12px}
+  .choices{gap:8px}
   /* 休息站 */
   .rest-option{flex-direction:column;align-items:flex-start;gap:4px}
-  .rest-opt-right{margin-left:0}
+  .rest-opt-right{margin-left:0;font-size:12px}
   /* 结局 */
   .ending-stats{gap:12px}
-  .end-stat .val{font-size:16px}
+  .end-stat .val{font-size:18px}
   .ending-title{font-size:22px;letter-spacing:2px}
+  .ending-text{padding:14px 12px;font-size:13px}
+  /* 物品栏 */
+  .item-tags{gap:4px}
+  .item-tag{font-size:11px;padding:3px 8px}
+  /* 商店 */
+  .shop-total{flex-direction:column;gap:8px;align-items:flex-start}
 }
 
 /* 超小屏（360px以下） */
 @media(max-width:360px){
+  #app{padding:8px}
   .title-main{font-size:22px;letter-spacing:2px}
   .stat-item{font-size:11px}
   .stat-label{font-size:10px}
   #alert-badge{font-size:10px;padding:2px 5px}
+  .narr-box{padding:12px 10px;font-size:13px}
+  .choice-btn{padding:10px}
 }
 </style>
 </head>
@@ -588,13 +607,14 @@ function crisis3_oxygen(next){
       [{title:'继续飞行',action:next}]
     );
   } else {
-    // 没有氧气包：不是直接惩罚，而是出现新的决策题
+    // 没有氧气包：先扣前置体力，再出决策选项
+    if(modHP(-10))return;
     showScene('// 突发危机 · 机舱氧气泄漏！〔随机〕',
-      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
+      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n【体力 -10】头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
       [
-        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -8',action:()=>{if(modTime(-20))return;if(modHP(-8))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -10',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-10))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -10；50%体力 -35',action:()=>{if(Math.random()<0.5){if(modHP(-10))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-35))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
+        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -5',action:()=>{if(modTime(-20))return;if(modHP(-5))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -5',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-5))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -5；50%体力 -25',action:()=>{if(Math.random()<0.5){if(modHP(-5))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-25))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
       ]
     );
   }

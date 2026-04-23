@@ -607,13 +607,14 @@ function crisis3_oxygen(next){
       [{title:'继续飞行',action:next}]
     );
   } else {
-    // 没有氧气包：不是直接惩罚，而是出现新的决策题
+    // 没有氧气包：先扣前置体力，再出决策选项
+    if(modHP(-10))return;
     showScene('// 突发危机 · 机舱氧气泄漏！〔随机〕',
-      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
+      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n【体力 -10】头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
       [
-        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -8',action:()=>{if(modTime(-20))return;if(modHP(-8))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -10',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-10))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -10；50%体力 -35',action:()=>{if(Math.random()<0.5){if(modHP(-10))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-35))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
+        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -5',action:()=>{if(modTime(-20))return;if(modHP(-5))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -5',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-5))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -5；50%体力 -25',action:()=>{if(Math.random()<0.5){if(modHP(-5))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-25))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
       ]
     );
   }
