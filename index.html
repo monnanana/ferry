@@ -953,8 +953,7 @@ function scene8_father_reveal(){
     '他的话说得很快，很混乱，但核心信息很清楚：Gate-7今晚换了扫描协议。\n他把一张手写的纸塞给你，然后——他停住了。\n')+
     '\n他低头看了一眼你飞船的货舱方向。\n就那么一眼。\n\n他没有钱，没有飞船，没有通行证。\n他只是在每个可能的航道守着，等一个奇迹。\n「求你，」他说，「告诉我它还好好的。」'+hpWarning()+timeWarning(),
     [
-      {title:'点头，让他知道',hint:'你没有说话，但他看懂了',cost:'警戒 +1（停留太久）',action:()=>{
-        if(modAlert(1))return;
+      {title:'点头，让他知道',hint:'你没有说话，但他看懂了',action:()=>{
         G.choices.toldFather=true;
         showScene('// 你告诉了他','你说了。\n他低下头，没有哭——他大概已经哭过很多次了。\n「谢谢你，」他说，「谢谢你。」\n你拉起飞船，没有回头。'+hpWarning()+timeWarning(),
         [{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);
