@@ -215,7 +215,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 <body>
 <div id="app">
   <!-- Stats Bar -->
-  <div id="stats-bar">
+  <div id="stats-bar" style="display:none">
     <div class="stat-item">
       <span class="stat-label">体力</span>
       <div id="hp-bar-wrap" style="display:flex;align-items:center;gap:5px">
@@ -409,6 +409,10 @@ function goScreen(name){
   const target=document.getElementById('screen-'+name);
   if(!target){console.error('[goScreen] 找不到元素: screen-'+name);return;}
   target.classList.add('active');
+  // 开始页和角色选择页隐藏状态栏
+  const hideBarScreens=['start','role'];
+  const statsBar=document.getElementById('stats-bar');
+  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':'';
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
