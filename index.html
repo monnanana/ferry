@@ -13,11 +13,11 @@
 *{box-sizing:border-box;margin:0;padding:0;min-width:0}
 html,body{overflow-x:hidden;width:100%;max-width:100%}
 body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;overflow-x:hidden}
-#app{width:100%;max-width:800px;min-width:320px;margin:0 auto;padding:20px;min-height:100vh;overflow-x:hidden;box-sizing:border-box}
+#app{width:min(800px,100%);min-width:320px;margin:0 auto;padding:20px;min-height:100vh;overflow-x:hidden;box-sizing:border-box}
 
 /* Stats Bar */
 #stats-bar{background:#111120;border:1px solid #00d4ff33;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:none;flex-wrap:nowrap;align-items:center;position:sticky;top:10px;z-index:100}
-.stat-item{display:flex;align-items:center;gap:5px;font-size:13px;flex:1;justify-content:center;min-width:0}
+.stat-item{display:flex;align-items:center;gap:5px;font-size:13px;flex:1;justify-content:center;min-width:0;white-space:nowrap}
 #hp-bar-wrap{flex:0 0 auto;display:flex;align-items:center;gap:5px}
 #hp-bar{width:50px;height:7px;background:#222;border-radius:4px;overflow:hidden;flex-shrink:0}
 #hp-fill{height:100%;border-radius:4px;transition:width 0.5s,background 0.5s}
