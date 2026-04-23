@@ -366,7 +366,6 @@ function triggerCaught(){if(_ctrig)return;_ctrig=true;showEnding('caught');}
 function triggerSurrounded(){if(_strig)return;_strig=true;showEnding('surrounded');}
 const ALERT_CFG=[null,{label:'Lv.1 🟢',bg:'#00ff8833',color:'#00ff88'},{label:'Lv.2 🟡',bg:'#ffcc0033',color:'#ffcc00'},{label:'Lv.3 🟠',bg:'#ff6b2b33',color:'#ff6b2b'},{label:'Lv.4 🔴',bg:'#ff2b2b44',color:'#ff2b2b'}];
 function updateStats(){
-  document.getElementById('stats-bar').style.display='flex';
   const fill=document.getElementById('hp-fill');
   fill.style.width=G.hp+'%';
   fill.style.background=G.hp>60?'#00ff88':G.hp>30?'#ffcc00':'#ff2b2b';
