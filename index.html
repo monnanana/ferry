@@ -716,8 +716,8 @@ function flight_segment1(next){
   const mono=getRoleMonologue(1);
   const narr='城市在你背后缩小，成为一片光点的集合。\n7频道传来断续的歌声——不知道是谁在唱，也不知道唱给谁听。\n你把收音机关掉了。\n货舱里的箱子还没有打开过。你不打算打开它。\n不是现在。'+( mono?'\n\n'+mono:'')+babyStatusHint()+ hpWarning()+timeWarning();
   showScene('// FLIGHT-1 · 出城之夜',narr,[
-    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态',cost:'体力 -8 · 时间正常',action:()=>{if(modHP(-8))return;next();}},
-    {title:'「加速，越快越好，不想多想」',hint:'用速度逃离思绪，但飞太快容易被雷达捕捉',cost:'体力 -12 · 警戒 +1',action:()=>{if(modHP(-12))return;if(modAlert(1))return;next();}}
+    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态，但多花时间',cost:'体力 -8 · ⏱ 时间 -15min',action:()=>{if(modHP(-8))return;if(modTime(-15))return;next();}},
+    {title:'「加速，越快越好，不想多想」',hint:'用速度逃离思绪，省时间但飞太快容易被雷达捕捉',cost:'体力 -15 · ⏱ 时间 -5min · 警戒 +1',action:()=>{if(modHP(-15))return;if(modTime(-5))return;if(modAlert(1))return;next();}}
   ]);
 }
 // ── SCENE 5: CHECKPOINT ALPHA ────────────────────────────────────────────
