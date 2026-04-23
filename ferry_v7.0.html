@@ -86,11 +86,11 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 .qty-btn:hover{border-color:#00d4ff;color:#00d4ff}
 .qty-display{min-width:24px;text-align:center;font-size:14px}
 .shop-total{background:#111120;border:1px solid #ffcc0033;border-radius:8px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.shop-money-row{display:flex;gap:0;border-bottom:1px solid #1a2a3a;margin-bottom:12px;padding-bottom:12px}
-.shop-money{flex:1;text-align:center;font-size:14px;border-right:1px solid #1a2a3a}
+.shop-money-row{display:flex;flex-direction:row;gap:0;border-bottom:1px solid #1a2a3a;margin-bottom:12px;padding-bottom:12px;width:100%}
+.shop-money{flex:1;text-align:center;font-size:14px;border-right:1px solid #1a2a3a;padding:4px 0}
 .shop-money:last-child{border-right:none}
-.shop-money .lbl{color:#888;font-size:11px;margin-bottom:2px}
-.shop-money .val{color:#ffcc00;font-size:18px;font-weight:bold}
+.shop-money .lbl{display:block;color:#888;font-size:11px;margin-bottom:4px;white-space:nowrap}
+.shop-money .val{display:block;color:#ffcc00;font-size:18px;font-weight:bold}
 
 /* Items bar */
 #items-bar{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:10px 14px;margin-bottom:16px;display:none}
@@ -847,7 +847,7 @@ function renderRestStop(stopNum,nextScene){
     {id:'oxygen',name:'补充氧气',req:'氧气包 ×1',desc:'低氧区安全通过',timeCost:3,cond:()=>hasItem('氧气包')&&!restUsed.oxygen,action:()=>{useItem('氧气包');G.oxygenUsed=true;doRestOpt('oxygen',3,stopNum,nextScene);}},
     {id:'fuel',name:'检查燃料',req:'燃料备用罐 ×1',desc:'引擎稳定，防迫降（不检查→Zone3有50%概率迫降：时间-30，体力-20）',timeCost:3,cond:()=>hasItem('燃料备用罐')&&!restUsed.fuel,action:()=>{useItem('燃料备用罐');G.fuelChecked=true;doRestOpt('fuel',3,stopNum,nextScene);}},
     {id:'inject',name:'注射镇静剂',req:'镇静剂 ×1',desc:'警戒 -1',timeCost:5,cond:()=>hasItem('镇静剂')&&!restUsed.inject,action:()=>{useItem('镇静剂');modAlert(-1);doRestOpt('inject',5,stopNum,nextScene);}},
-    {id:'wait',name:'低调等待',req:'无需物品',desc:'警戒 -1，时间消耗较多',timeCost:20,cond:()=>!restUsed.wait,action:()=>{modAlert(-1);doRestOpt('wait',20,stopNum,nextScene);}},
+    {id:'wait',name:'低调等待',req:'无需物品',desc:'警戒 -1，时间消耗较多',timeCost:20,cond:()=>!restUsed.wait&&G.alert>=2,action:()=>{modAlert(-1);doRestOpt('wait',20,stopNum,nextScene);}},
   ];
   let html=`<div class="rest-card"><div class="rest-title">🛸 临时停靠点</div><div class="rest-timer">⏱ 休息站时间窗口：<span id="rest-time-left">${timeLeft}</span> 分钟剩余</div><div class="rest-options">`;
   opts.forEach(o=>{
