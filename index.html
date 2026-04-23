@@ -626,7 +626,7 @@ function crisis3_oxygen(next){
   if(G.oxygenUsed){
     if(modHP(-5))return;if(modTime(-15))return;
     showScene('// 突发危机 · 机舱气压异常 〔随机〕',
-      '警报：机舱气压出现轻微下降！传感器疯狂闪烁。\n你迅速检查密封条——是右侧舱门的橡胶垫老化了。\n备用氧气系统自动启动，压力恢复正常。\n你深吸一口气，短暂地放松了握紧操控台的手。'+hpWarning()+timeWarning(),
+      '警报：机舱气压出现轻微下降！传感器疯狂闪烁。\n你迅速检查密封条——是右侧舱门的橡胶垫老化了。\n备用氧气系统自动启动，压力恢复正常。\n你深吸一口气，短暂地放松了握紧操控台的手。\n\n【应急处理消耗：体力 -5 · ⏱ 时间 -15min】'+hpWarning()+timeWarning(),
       [{title:'继续飞行',action:next}]
     );
   } else {
@@ -901,7 +901,7 @@ function leaveRestStop(stopNum){
 // ── SCENE 7: LOW OXYGEN ZONE ─────────────────────────────────────────────
 function scene7_zone2(){
   if(ended())return;
-  if(modHP(-8))return;if(modTime(-8))return;if(ended())return;_scene7_inner();}
+  if(modHP(-5))return;if(modTime(-5))return;if(ended())return;_scene7_inner();}
 function _scene7_inner(){
   if(G.oxygenUsed){
     showScene('// ZONE-2 · 低氧区',
@@ -926,7 +926,7 @@ function _scene7_inner(){
 // ── SCENE 8: SUSPICIOUS CONTACT ──────────────────────────────────────────
 function scene8_contact(){
   if(ended())return;
-  if(modHP(-10))return;if(ended())return;
+  if(modHP(-5))return;if(ended())return;
   const roleChoices={
     zero:{title:'零专属：躲起来观察',hint:'用隐身披风悄悄评估对方意图',cost:'⏱ 时间 -3min · 获得线索，无风险',special:true,action:()=>{if(modTime(-3))return;G.clues.push('陌生人情报');showScene('// 观察结果','你躲在信号盲区，静静地看了他五分钟。\n他不是联邦的人——肯定不是。动作太紧张，眼神太害怕。\n他只是另一个在等待的人。\n你获得了「陌生人情报」。'+hpWarning()+timeWarning(),[{title:'靠近看看',action:scene8_father_reveal}]);}},
     chen:{title:'陈叔专属：联系老朋友核实',hint:'用人脉通讯器确认对方身份，用完销号',cost:'人脉通讯器 -1 · 获得线索 + ¥20'+(hasItem('人脉通讯器')?'':' · 无通讯器'),special:true,disabled:!hasItem('人脉通讯器'),action:()=>{useItem('人脉通讯器');G.clues.push('陌生人情报');modMoney(20);showScene('// 老朋友核实','电话那头沉默了三秒：「是自己人，你帮他一把。」\n对方把知道的情报全说了，还转给你二十块路费。\n挂掉电话，号码自动销毁。\n你靠近了一步——然后你看清了那张脸。'+hpWarning()+timeWarning(),[{title:'靠近看看',action:scene8_father_reveal}]);}},
@@ -1025,7 +1025,7 @@ function _scene9_5_inner(){
     const hpLoss=Math.round(20*fuelPenaltyMult);const timeLoss=Math.round(30*fuelPenaltyMult);
     if(modHP(-hpLoss))return;if(modTime(-timeLoss))return;if(modAlert(1))return;
     showScene('// ZONE-3 · 强制迫降！',
-      '引擎彻底熄火！没有备用燃料，没有任何缓冲！\n穿梭机开始失控下坠，警报声刺穿耳膜，仪表盘全部变红。\n你拼命拉操控杆，勉强在一处废弃停机坪上完成紧急迫降。\n箱子——你第一个去检查箱子。还完好。'+hpWarning()+timeWarning(),
+      '引擎彻底熄火！没有备用燃料，没有任何缓冲！\n穿梭机开始失控下坠，警报声刺穿耳膜，仪表盘全部变红。\n你拼命拉操控杆，勉强在一处废弃停机坪上完成紧急迫降。\n箱子——你第一个去检查箱子。还完好。\n\n【迫降代价：体力 -'+hpLoss+' · ⏱ 时间 -'+timeLoss+'min · 警戒 +1】'+hpWarning()+timeWarning(),
       [{title:'重新起飞，继续',action:scene9_7_fatigue}]
     );
   }
@@ -1045,7 +1045,7 @@ function flight_segment5(next){
   const babyHint=G.babyHealth<40?'\n\n货舱里偶尔传来很轻的动静——不像哭声，更像是某种微弱的、持续的努力。':'';
   const narr='你开始看见不该在那里的东西。\n右侧舷窗外，有一个身影，和你保持同样的速度和方向。\n你知道这是幻觉。极度疲劳加低压等于视觉误判。你知道这个。\n但你还是转过头，看了它的脸。\n那是你认识的某个人。\n\n【长途飞行消耗：⏱ 时间 -5min · 体力 -8】\n\n'+figure+'\n\n它开口了：「值得吗？」'+babyHint+hpWarning()+timeWarning();
   showScene('// FLIGHT-5 · 幻觉',narr,[
-    {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',action:()=>{
+    {title:'「值得。为了钱。」',hint:'说出来了，比你预想的响',cost:'⚠ 警戒 +1（声音引起注意）',action:()=>{
       if(modAlert(1))return;
       showScene('// 你大声说了','你说了实话。\n飞行轨迹短暂偏移——声音太大，手抖了一下。\n那张脸没有反应，只是还在那里。\n你不确定你说的是不是真的。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
@@ -1054,7 +1054,7 @@ function flight_segment5(next){
       G.choices.forChildScore=true;
       showScene('// 你哭了','你没有解释原因。\n那张脸不说话了，但也没有消失。\n你擦掉眼泪，继续飞。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
-    {title:'「不知道。先活下去再说。」',hint:'你在黑暗里漂了一会儿',action:()=>{
+    {title:'「不知道。先活下去再说。」',hint:'你在黑暗里漂了一会儿',cost:'⏱ 时间 -15min（发呆太久）',action:()=>{
       if(modTime(-15))return;
       showScene('// 你漂了一会儿','你关掉了所有不必要的仪表灯，在黑暗里坐了一段时间。\n没有答案，但你需要这段沉默。\n然后重新打开引擎，继续飞。'+hpWarning()+timeWarning(),[{title:'继续',action:next}]);
     }},
