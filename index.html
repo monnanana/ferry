@@ -1345,7 +1345,7 @@ function showEnding(type){
     const costs=[];
     const hpLost=100-G.hp;
     const timeLost=120-G.time;
-    const moneyLost=(G.role==='chen'?160:G.role==='vera'?140:G.role==='zero'?100:G.role==='seven'?120:110)-G.money;
+    const moneyLost=(G.role==='chen'?160:G.role==='vera'?90:G.role==='zero'?80:G.role==='seven'?120:140)-G.money;
     if(hpLost>=60) costs.push('体力几乎耗尽');
     else if(hpLost>=35) costs.push('体力大量消耗');
     else if(hpLost>=15) costs.push('体力有所损耗');
