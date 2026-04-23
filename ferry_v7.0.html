@@ -78,7 +78,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 .choice-btn.role-special .choice-title::before{content:'★ ';color:#00d4ff}
 
 /* Shop */
-#screen-shop{padding:10px 0}
+#screen-shop{padding:10px 0;max-width:800px;margin:0 auto;width:100%}
 .shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
 .shop-item{background:#111120;border:1px solid #333;border-radius:8px;padding:14px}
 .shop-item-name{font-size:14px;color:#fff;margin-bottom:4px}
@@ -418,9 +418,10 @@ function goScreen(name){
   if(!target){console.error('[goScreen] 找不到元素: screen-'+name);return;}
   target.classList.add('active');
   // 开始页和角色选择页隐藏状态栏
-  const hideBarScreens=['start','role'];
+  // 只有出发后的游戏页面才显示状态栏，开始/角色选择/补给站/结局页面均隐藏
+  const showBarScreens=['story','ending'];
   const statsBar=document.getElementById('stats-bar');
-  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':(window.innerWidth<=480?'grid':'flex');
+  if(statsBar) statsBar.style.display=showBarScreens.includes(name)?(window.innerWidth<=480?'grid':'flex'):'none';
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
