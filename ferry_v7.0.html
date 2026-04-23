@@ -85,9 +85,11 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 .qty-btn:hover{border-color:#00d4ff;color:#00d4ff}
 .qty-display{min-width:24px;text-align:center;font-size:14px}
 .shop-total{background:#111120;border:1px solid #ffcc0033;border-radius:8px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.shop-money{font-size:16px}
-.shop-money .lbl{color:#888;font-size:12px}
-.shop-money .val{color:#ffcc00;font-size:20px;font-weight:bold}
+.shop-money-row{display:flex;gap:0;border-bottom:1px solid #1a2a3a;margin-bottom:12px;padding-bottom:12px}
+.shop-money{flex:1;text-align:center;font-size:14px;border-right:1px solid #1a2a3a}
+.shop-money:last-child{border-right:none}
+.shop-money .lbl{color:#888;font-size:11px;margin-bottom:2px}
+.shop-money .val{color:#ffcc00;font-size:18px;font-weight:bold}
 
 /* Items bar */
 #items-bar{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:10px 14px;margin-bottom:16px;display:none}
@@ -296,9 +298,11 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   <div id="screen-shop" class="screen">
     <div class="section-title">⚙ 补给站</div>
     <div class="shop-total">
-      <div class="shop-money"><div class="lbl">当前资金</div><div class="val" id="shop-money-display">¥0</div></div>
-      <div class="shop-money"><div class="lbl">已花费</div><div class="val" id="shop-spent">¥0</div></div>
-      <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
+      <div class="shop-money-row">
+        <div class="shop-money"><div class="lbl">当前资金</div><div class="val" id="shop-money-display">¥0</div></div>
+        <div class="shop-money"><div class="lbl">已花费</div><div class="val" id="shop-spent">¥0</div></div>
+        <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
+      </div>
     </div>
     <div class="shop-grid" id="shop-grid"></div>
     <div id="role-starter-items" style="margin-bottom:16px;background:#111120;border:1px solid #00d4ff22;border-radius:8px;padding:14px;font-size:13px;color:#888">
