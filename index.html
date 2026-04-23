@@ -411,7 +411,7 @@ function goScreen(name){
   // 开始页和角色选择页隐藏状态栏
   const hideBarScreens=['start','role'];
   const statsBar=document.getElementById('stats-bar');
-  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':'';
+  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':'grid';
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
@@ -603,7 +603,7 @@ function crisis2_drone(next){
   );
 }
 function crisis3_oxygen(next){
-  if(G.oxygenUsed||hasItem('氧气包')){
+  if(G.oxygenUsed){
     if(modHP(-5))return;if(modTime(-10))return;
     showScene('// 突发危机 · 机舱气压异常 〔随机〕',
       '警报：机舱气压出现轻微下降！传感器疯狂闪烁。\n你迅速检查密封条——是右侧舱门的橡胶垫老化了。\n备用氧气系统自动启动，压力恢复正常。\n你深吸一口气，短暂地放松了握紧操控台的手。'+hpWarning()+timeWarning(),
@@ -1425,6 +1425,7 @@ function showEnding(type){
 }
 // ── RESTART ───────────────────────────────────────────────────────────────
 function restartGame(){
+  Object.keys(shopQty).forEach(k=>shopQty[k]=0);
   Object.assign(G,{role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
   // Reset narrative choice flags
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,forChildScore:false,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false};
