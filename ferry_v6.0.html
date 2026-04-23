@@ -3,17 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta property="og:title" content="最后的摆渡人 · The Last Ferryman" />
-<meta property="og:description" content="2147年，封锁星域，一只箱子，一段不知终点的飞行。赛博朋克生存文字冒险。" />
-<meta property="og:image" content="https://monnanana.github.io/ferry/cover.png" />
-<meta property="og:url" content="https://monnanana.github.io/ferry/" />
-<meta property="og:type" content="website" />
 <title>最后的摆渡人</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;min-width:0}
-html,body{overflow-x:hidden;width:100%;max-width:100%}
-body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;overflow-x:hidden}
-#app{width:800px;max-width:100vw;min-width:320px;margin:0 auto;padding:20px;min-height:100vh;overflow-x:hidden}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
+#app{width:800px;max-width:100%;min-width:320px;margin:0 auto;padding:20px;min-height:100vh}
 
 /* Stats Bar */
 #stats-bar{background:#111120;border:1px solid #00d4ff33;border-radius:8px;padding:10px 16px;margin-bottom:16px;display:none;flex-wrap:nowrap;align-items:center;position:sticky;top:10px;z-index:100}
@@ -57,15 +51,15 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* Narrative */
 #screen-story,#screen-scene{padding:10px 0}
-.narr-box{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:24px;margin-bottom:20px;min-height:120px;line-height:1.8;font-size:15px;position:relative;overflow:hidden;width:100%;box-sizing:border-box}
+.narr-box{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:24px;margin-bottom:20px;min-height:120px;line-height:1.8;font-size:15px;position:relative}
 .narr-box .scene-tag{font-size:11px;color:#00d4ff;letter-spacing:2px;margin-bottom:12px;display:block}
-#typewriter-text{white-space:pre-wrap;width:100%;display:block;word-break:break-word;overflow-wrap:break-word}
+#typewriter-text{white-space:pre-wrap}
 .cursor{display:inline-block;width:2px;height:16px;background:#00d4ff;animation:blink 0.8s infinite;vertical-align:middle;margin-left:2px}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
 /* Choices */
 .choices{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.choice-btn{background:#111120;border:1px solid #333;border-radius:6px;padding:14px 18px;text-align:left;cursor:pointer;transition:all 0.3s;font-family:inherit;color:#e0e0e0;font-size:14px;width:100%;word-break:break-word;overflow-wrap:break-word}
+.choice-btn{background:#111120;border:1px solid #333;border-radius:6px;padding:14px 18px;text-align:left;cursor:pointer;transition:all 0.3s;font-family:inherit;color:#e0e0e0;font-size:14px}
 .choice-btn:hover:not(:disabled){border-color:#00d4ff;background:#00d4ff0d;transform:translateX(4px)}
 .choice-btn:disabled{opacity:0.4;cursor:not-allowed}
 .choice-btn .choice-title{font-size:14px;color:#fff;margin-bottom:4px}
@@ -85,12 +79,10 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 .qty-btn{background:#222;border:1px solid #444;color:#e0e0e0;width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
 .qty-btn:hover{border-color:#00d4ff;color:#00d4ff}
 .qty-display{min-width:24px;text-align:center;font-size:14px}
-.shop-total{margin-bottom:12px;}
-.shop-money-row{display:flex;flex-direction:row;margin-bottom:10px;width:100%;overflow:hidden;background:#0d1520;border-radius:6px;padding:8px 0}
-.shop-money{flex:1;min-width:0;text-align:center;border-right:1px solid #1a2a3a}
-.shop-money:last-child{border-right:none}
-.shop-money .lbl{display:block;color:#888;font-size:10px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.shop-money .val{display:block;color:#ffcc00;font-size:15px;font-weight:bold}
+.shop-total{background:#111120;border:1px solid #ffcc0033;border-radius:8px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.shop-money{font-size:16px}
+.shop-money .lbl{color:#888;font-size:12px}
+.shop-money .val{color:#ffcc00;font-size:20px;font-weight:bold}
 
 /* Items bar */
 #items-bar{background:#111120;border:1px solid #ffffff11;border-radius:8px;padding:10px 14px;margin-bottom:16px;display:none}
@@ -165,64 +157,46 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
 
 /* 手机（480px以下） */
 @media(max-width:480px){
-  html,body{overflow-x:hidden;width:100%}
-  #app{padding:10px;width:100%;box-sizing:border-box;overflow-x:hidden}
-  /* 状态栏：两行 2x2 */
+  #app{padding:8px}
+  /* 状态栏：两行 */
   #stats-bar{flex-wrap:wrap;gap:6px;padding:8px 10px}
-  #stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 4px;padding:8px 10px}
-  .stat-item{flex:none;width:auto;box-sizing:border-box;justify-content:center;flex-direction:column;align-items:center;gap:2px}
-  .stat-label{font-size:10px;color:#666;display:block;text-align:center}
-  #hp-bar-wrap{display:flex;align-items:center;gap:4px}
-  #hp-bar{width:50px;flex-shrink:0}
-  #hp-val{font-size:12px}
+  .stat-item{flex:none;min-width:calc(50% - 6px)}
+  #hp-bar-wrap{min-width:100%;flex:none}
+  #hp-bar{width:100%;max-width:none}
   /* 标题 */
-  #screen-title{padding:40px 16px}
   .title-main{font-size:28px;letter-spacing:3px;margin-bottom:6px}
   .title-sub{font-size:13px;letter-spacing:2px;margin-bottom:40px}
-  .btn-start{padding:12px 32px;font-size:15px;width:100%;box-sizing:border-box}
+  .btn-start{padding:12px 32px;font-size:15px}
   /* 角色选择：单列 */
-  .role-grid{grid-template-columns:1fr;gap:10px}
-  .role-card{padding:12px}
-  .role-bg{display:none}/* 手机隐藏长背景文字，保持卡片紧凑 */
+  .role-grid{grid-template-columns:1fr}
   /* 商店：单列 */
   .shop-grid{grid-template-columns:1fr}
   /* 叙事 */
-  .narr-box{padding:14px 12px;font-size:14px;min-height:auto;word-break:break-all;overflow-wrap:break-word}
-  #typewriter-text{word-break:break-all;overflow-wrap:break-word}
-  .choice-btn{padding:12px;font-size:13px;word-break:break-all}
-  .choice-btn .choice-title{font-size:14px}
-  .choice-btn .choice-hint{font-size:12px}
-  .choices{gap:8px}
+  .narr-box{padding:14px;font-size:13px;min-height:80px}
+  .choice-btn{padding:12px 12px;font-size:13px}
+  .choice-btn .choice-title{font-size:13px}
   /* 休息站 */
   .rest-option{flex-direction:column;align-items:flex-start;gap:4px}
-  .rest-opt-right{margin-left:0;font-size:12px}
+  .rest-opt-right{margin-left:0}
   /* 结局 */
   .ending-stats{gap:12px}
-  .end-stat .val{font-size:18px}
+  .end-stat .val{font-size:16px}
   .ending-title{font-size:22px;letter-spacing:2px}
-  .ending-text{padding:14px 12px;font-size:13px}
-  /* 物品栏 */
-  .item-tags{gap:4px}
-  .item-tag{font-size:11px;padding:3px 8px}
-  /* 商店 */
 }
 
 /* 超小屏（360px以下） */
 @media(max-width:360px){
-  #app{padding:8px}
   .title-main{font-size:22px;letter-spacing:2px}
   .stat-item{font-size:11px}
   .stat-label{font-size:10px}
   #alert-badge{font-size:10px;padding:2px 5px}
-  .narr-box{padding:12px 10px;font-size:13px}
-  .choice-btn{padding:10px}
 }
 </style>
 </head>
 <body>
 <div id="app">
   <!-- Stats Bar -->
-  <div id="stats-bar" style="display:none">
+  <div id="stats-bar">
     <div class="stat-item">
       <span class="stat-label">体力</span>
       <div id="hp-bar-wrap" style="display:flex;align-items:center;gap:5px">
@@ -240,7 +214,7 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
     </div>
     <div class="stat-item">
       <span class="stat-label">燃料</span>
-      <span id="fuel-badge">🔋 充足</span>
+      <span id="fuel-badge">⛽ 充足</span>
     </div>
     <div class="stat-item">
       <span class="stat-label">资金</span>
@@ -298,15 +272,16 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   <div id="screen-shop" class="screen">
     <div class="section-title">⚙ 补给站</div>
     <div class="shop-total">
-      <div class="shop-money-row">
-        <div class="shop-money"><div class="lbl">当前资金</div><div class="val" id="shop-money-display">¥0</div></div>
-        <div class="shop-money"><div class="lbl">已花费</div><div class="val" id="shop-spent">¥0</div></div>
-        <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
-      </div>
+      <div class="shop-money"><div class="lbl">当前资金</div><div class="val" id="shop-money-display">¥0</div></div>
+      <div class="shop-money"><div class="lbl">已花费</div><div class="val" id="shop-spent">¥0</div></div>
+      <div class="shop-money"><div class="lbl">剩余</div><div class="val" id="shop-remain">¥0</div></div>
     </div>
     <div class="shop-grid" id="shop-grid"></div>
+    <div id="role-starter-items" style="margin-bottom:16px;background:#111120;border:1px solid #00d4ff22;border-radius:8px;padding:14px;font-size:13px;color:#888">
+      <span style="color:#00d4ff">初始装备：</span><span id="starter-items-text"></span>
+    </div>
     <div style="font-size:12px;color:#ff6b2b;margin-bottom:12px;padding:10px 14px;border:1px solid #ff6b2b33;border-radius:6px;background:#ff6b2b0a;">
-      ⚠ 出发前确认：资金、物品、体力都可能是出路，也可能都不够用。没有最优解，只有你的判断。
+      ⚠ 途中会遇到检查站、巡逻队、突发危机，资金、物品、体力都可能是出路——也可能都不够用。
     </div>
     <button class="btn-leave" onclick="startGame()">装备完毕，出发 →</button>
   </div>
@@ -335,18 +310,18 @@ body{background:#0a0a0f;color:#e0e0e0;font-family:'Courier New',monospace;min-he
   </div>
 </div>
 <script>
-const G={role:null,hp:100,time:90,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,
+const G={role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,
   babyHealth:100, // 货物状态：100=正常，60=异常，30=危险，0=...
   babyFed:0,      // 货物获得照料次数
   // narrative choice flags:
   // heardBox,toldFather,helpedOldMan,ignoredOldMan,forChild,clientCancelled,rejectedClient,betrayedBaby,slowedEngine
 };
 const ROLES={
-zero:{id:'zero',name:'零 Zero',nameEn:'少女·暗影',hp:85,money:80,style:'隐匿疾走',ability:'可钻通风道/藏入货柜绕过检查站',bg:'十九岁，在城市管道和缝隙里活了五年，没有档案、没有地址。今晚第一次接了个"不要问里面是什么"的任务。',starter:{'隐身披风':1},starterText:'隐身披风 ×1'},
-chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:140,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
-vera:{id:'vera',name:'维拉 Vera',nameEn:'前联邦官员',hp:75,money:100,style:'权威伪装',ability:'持有联邦证件（2次），可强制通过检查',bg:'联邦第七区前行政官，直到她在净化名单上看到了一个名字——一个不该出现在那张表格上的名字。她带走证件，联系地下网络，开始赎罪。',starter:{'联邦证件':2},starterText:'联邦证件 ×2'},
-seven:{id:'seven',name:'七 Seven',nameEn:'网络幽灵',hp:70,money:90,style:'科技制胜',ability:'可入侵系统删除记录/开门',bg:'黑网上没有真实档案的幽灵。用终端扫描过箱子，确认了生命迹象。报酬不是钱——是某份解密档案里记载的一个名字。',starter:{'黑客终端':1},starterText:'黑客终端 ×1'},
-eun:{id:'eun',name:'恩 Eun',nameEn:'战地医疗兵',hp:80,money:90,style:'持久续航',ability:'额外医疗资源，可应急救治自身及货物',bg:'前联邦卫生兵，战场规则只有一条：伤者必救，不论立场。一个女人抱着箱子来求她，她打开急救包，出发了。',starter:{'急救包':2,'镇静剂':1},starterText:'急救包 ×2，镇静剂 ×1'}
+zero:{id:'zero',name:'零 Zero',nameEn:'少女·暗影',hp:100,money:80,style:'隐匿疾走',ability:'可钻通风道/藏入货柜绕过检查站',bg:'十九岁，在城市管道和缝隙里活了五年，没有档案、没有地址。今晚第一次接了个"不要问里面是什么"的任务。',starter:{'隐身披风':1},starterText:'隐身披风 ×1'},
+chen:{id:'chen',name:'陈叔',nameEn:'老司机·人脉',hp:55,money:160,style:'金钱开路',ability:'可联系黑市内线，熟知走私路线',bg:'跑了三十年货运船的老司机。规矩只有一条：不运人。今晚他破了规矩——因为老搭档阿洪临终前把箱子推过来，说：只有你能把这个送出去。',starter:{'老旧导航仪':1,'人脉通讯器':1},starterText:'老旧导航仪 ×1，人脉通讯器 ×1'},
+vera:{id:'vera',name:'维拉 Vera',nameEn:'前联邦官员',hp:75,money:90,style:'权威伪装',ability:'持有联邦证件（2次），可强制通过检查',bg:'联邦第七区前行政官，直到她在净化名单上看到了一个名字——一个不该出现在那张表格上的名字。她带走证件，联系地下网络，开始赎罪。',starter:{'联邦证件':2},starterText:'联邦证件 ×2'},
+seven:{id:'seven',name:'七 Seven',nameEn:'网络幽灵',hp:70,money:120,style:'科技制胜',ability:'可入侵系统删除记录/开门',bg:'黑网上没有真实档案的幽灵。用终端扫描过箱子，确认了生命迹象。报酬不是钱——是某份解密档案里记载的一个名字。',starter:{'黑客终端':1},starterText:'黑客终端 ×1'},
+eun:{id:'eun',name:'恩 Eun',nameEn:'战地医疗兵',hp:80,money:140,style:'持久续航',ability:'额外医疗资源，可应急救治自身及货物',bg:'前联邦卫生兵，战场规则只有一条：伤者必救，不论立场。一个女人抱着箱子来求她，她打开急救包，出发了。',starter:{'急救包':2,'镇静剂':1},starterText:'急救包 ×2，镇静剂 ×1'}
 };
 const SHOP_ITEMS=[
 {key:'食物补给',price:20,desc:'休息站使用，体力 +25'},
@@ -372,6 +347,7 @@ function triggerCaught(){if(_ctrig)return;_ctrig=true;showEnding('caught');}
 function triggerSurrounded(){if(_strig)return;_strig=true;showEnding('surrounded');}
 const ALERT_CFG=[null,{label:'Lv.1 🟢',bg:'#00ff8833',color:'#00ff88'},{label:'Lv.2 🟡',bg:'#ffcc0033',color:'#ffcc00'},{label:'Lv.3 🟠',bg:'#ff6b2b33',color:'#ff6b2b'},{label:'Lv.4 🔴',bg:'#ff2b2b44',color:'#ff2b2b'}];
 function updateStats(){
+  document.getElementById('stats-bar').style.display='flex';
   const fill=document.getElementById('hp-fill');
   fill.style.width=G.hp+'%';
   fill.style.background=G.hp>60?'#00ff88':G.hp>30?'#ffcc00':'#ff2b2b';
@@ -392,9 +368,9 @@ function updateStats(){
   // 燃料状态指示
   const fb=document.getElementById('fuel-badge');
   if(fb){
-    if(G.fuelChecked){fb.textContent='🔋 安全';fb.style.color='#00ff88';}
-    else if(G.passedRest1){fb.textContent='🔋 未检查 ⚠';fb.style.color='#ff6b2b';}
-    else{fb.textContent='🔋 充足';fb.style.color='#888';}
+    if(G.fuelChecked){fb.textContent='⛽ 安全';fb.style.color='#00ff88';}
+    else if(G.passedRest1){fb.textContent='⛽ 未检查 ⚠';fb.style.color='#ff6b2b';}
+    else{fb.textContent='⛽';fb.style.color='#888';}
   }
   updateItemsBar();
 }
@@ -414,10 +390,6 @@ function goScreen(name){
   const target=document.getElementById('screen-'+name);
   if(!target){console.error('[goScreen] 找不到元素: screen-'+name);return;}
   target.classList.add('active');
-  // 开始页和角色选择页隐藏状态栏
-  const hideBarScreens=['start','role'];
-  const statsBar=document.getElementById('stats-bar');
-  if(statsBar) statsBar.style.display=hideBarScreens.includes(name)?'none':(window.innerWidth<=480?'grid':'flex');
   console.log('[goScreen] active设置完成，display=',getComputedStyle(target).display);
   window.scrollTo(0,0);
 }
@@ -428,19 +400,10 @@ function typewrite(elId,text,cb,speed=20){
   el.innerHTML='';
   let i=0;
   if(twTimer)clearInterval(twTimer);
-  // 用 DOM 节点追加代替 innerHTML+=，避免移动端每字重新解析布局导致撑宽
-  let curTextNode=document.createTextNode('');
-  el.appendChild(curTextNode);
   twTimer=setInterval(()=>{
     if(i<text.length){
       const ch=text[i];
-      if(ch==='\n'){
-        el.appendChild(document.createElement('br'));
-        curTextNode=document.createTextNode('');
-        el.appendChild(curTextNode);
-      }else{
-        curTextNode.nodeValue+=ch;
-      }
+      el.innerHTML+=ch==='\n'?'<br>':ch;
       i++;
     }else{clearInterval(twTimer);twTimer=null;if(cb)cb();}
   },speed);
@@ -491,12 +454,11 @@ function confirmRole(){
   if(!selectedRole){alert('请先选择角色！');return;}
   const r=ROLES[selectedRole];
   G.role=selectedRole;G.hp=r.hp;G.money=r.money;
-  G.items={};G.clues=[];G.alert=1;G.time=90;
+  G.items={};G.clues=[];G.alert=1;G.time=120;
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false,forChildScore:false};
   G.oxygenUsed=false;G.fuelChecked=false;G.lastCrisis=false;G.passedRest1=false;
   _dtrig=false;_ctrig=false;_strig=false;
   Object.entries(r.starter).forEach(([k,v])=>addItem(k,v));
-  updateStats();
   goScreen('story');
   startPrologue();
 }
@@ -619,21 +581,20 @@ function crisis2_drone(next){
   );
 }
 function crisis3_oxygen(next){
-  if(G.oxygenUsed){
+  if(G.oxygenUsed||hasItem('氧气包')){
     if(modHP(-5))return;if(modTime(-10))return;
     showScene('// 突发危机 · 机舱气压异常 〔随机〕',
       '警报：机舱气压出现轻微下降！传感器疯狂闪烁。\n你迅速检查密封条——是右侧舱门的橡胶垫老化了。\n备用氧气系统自动启动，压力恢复正常。\n你深吸一口气，短暂地放松了握紧操控台的手。'+hpWarning()+timeWarning(),
       [{title:'继续飞行',action:next}]
     );
   } else {
-    // 没有氧气包：先扣前置体力，再出决策选项
-    if(modHP(-10))return;
+    // 没有氧气包：不是直接惩罚，而是出现新的决策题
     showScene('// 突发危机 · 机舱氧气泄漏！〔随机〕',
-      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n【体力 -10】头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
+      '警报：机舱气压下降！仪表盘上氧气读数急速下坠！\n你没有备用氧气。\n头开始发沉，视野边缘出现黑色晕圈，手指变得麻木迟钝。\n你必须马上做决定——每一秒都在消耗。'+hpWarning()+timeWarning(),
       [
-        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -5',action:()=>{if(modTime(-20))return;if(modHP(-5))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -5',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-5))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
-        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -5；50%体力 -25',action:()=>{if(Math.random()<0.5){if(modHP(-5))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-25))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
+        {title:'减速降低氧耗，绕开低压航段',hint:'稳住，省体力但耗时间',cost:'⏱ 时间 -20min · 体力 -8',action:()=>{if(modTime(-20))return;if(modHP(-8))return;showScene('// 绕道通过','你把速度降到最低，绕开了最严重的低压区。\n慢，但安全。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'用急救包兴奋剂强撑'+(hasItem('急救包')?'':' （无急救包）'),hint:'刺激剂可以抵抗缺氧反应',cost:'急救包 -1 · 体力 -10',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');if(modHP(-10))return;showScene('// 硬撑过去','注射后视野勉强清晰，你咬牙飞过了危险区段。\n急救包用在了意想不到的地方。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}},
+        {title:'屏住呼吸硬冲，赌最短路线',hint:'50%快速冲过；50%严重失氧',cost:'50%体力 -10；50%体力 -35',action:()=>{if(Math.random()<0.5){if(modHP(-10))return;showScene('// 险过','你屏住呼吸，把油门推到底，在失去意识之前冲出了低压区。\n运气不错，这次。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}else{if(modHP(-35))return;showScene('// 失氧','你差点在驾驶舱里晕过去。\n飞船自动修正了航线，你醒来时已经飞出了危险区。\n但代价不小。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:next}]);}}}
       ]
     );
   }
@@ -721,7 +682,8 @@ function flight_segment1(next){
   const mono=getRoleMonologue(1);
   const narr='城市在你背后缩小，成为一片光点的集合。\n7频道传来断续的歌声——不知道是谁在唱，也不知道唱给谁听。\n你把收音机关掉了。\n货舱里的箱子还没有打开过。你不打算打开它。\n不是现在。'+( mono?'\n\n'+mono:'')+babyStatusHint()+ hpWarning()+timeWarning();
   showScene('// FLIGHT-1 · 出城之夜',narr,[
-    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态',cost:'体力 -8 · ⏱ 时间 -10min',action:()=>{if(modHP(-8))return;if(modTime(-10))return;next();}}
+    {title:'「保持巡航速度，让自己冷静下来」',hint:'稳定飞行，控制状态',cost:'体力 -8 · 时间正常',action:()=>{if(modHP(-8))return;next();}},
+    {title:'「加速，越快越好，不想多想」',hint:'用速度逃离思绪',cost:'体力 -12 · ⏱ 时间 -5min · 警戒 +1',action:()=>{if(modHP(-12))return;if(modTime(-5))return;if(modAlert(1))return;next();}}
   ]);
 }
 // ── SCENE 5: CHECKPOINT ALPHA ────────────────────────────────────────────
@@ -742,8 +704,7 @@ function scene5_checkpoint(route){
       G.choices.ignoredOldMan=true;
       scene5_checkpoint_passage(route);
     }},
-    ...(G.role==='chen'?[{title:'陈叔专属：用通讯器匿名举报检查站违规',hint:'让他们自乱阵脚',cost:'人脉通讯器 -1 · ⏱ 时间 -5min'+(hasItem('人脉通讯器')?'':' · 无通讯器'),special:true,disabled:!hasItem('人脉通讯器'),action:()=>{
-      useItem('人脉通讯器');
+    ...(G.role==='chen'?[{title:'陈叔专属：用通讯器匿名举报检查站违规',hint:'让他们自乱阵脚',cost:'⏱ 时间 -5min',special:true,action:()=>{
       if(modTime(-5))return;
       G.choices.helpedOldMan=true;
       showScene('// 匿名举报','你用通讯器发出一条匿名信息，举报该检查站有违规行为。\n对讲机里传来上级的查询声，那名执法官慌忙松开了老人。\n老人用感激的眼神望向四处，然后消失在黑暗里。'+hpWarning()+timeWarning(),
@@ -851,7 +812,7 @@ function renderRestStop(stopNum,nextScene){
     {id:'oxygen',name:'补充氧气',req:'氧气包 ×1',desc:'低氧区安全通过',timeCost:3,cond:()=>hasItem('氧气包')&&!restUsed.oxygen,action:()=>{useItem('氧气包');G.oxygenUsed=true;doRestOpt('oxygen',3,stopNum,nextScene);}},
     {id:'fuel',name:'检查燃料',req:'燃料备用罐 ×1',desc:'引擎稳定，防迫降（不检查→Zone3有50%概率迫降：时间-30，体力-20）',timeCost:3,cond:()=>hasItem('燃料备用罐')&&!restUsed.fuel,action:()=>{useItem('燃料备用罐');G.fuelChecked=true;doRestOpt('fuel',3,stopNum,nextScene);}},
     {id:'inject',name:'注射镇静剂',req:'镇静剂 ×1',desc:'警戒 -1',timeCost:5,cond:()=>hasItem('镇静剂')&&!restUsed.inject,action:()=>{useItem('镇静剂');modAlert(-1);doRestOpt('inject',5,stopNum,nextScene);}},
-    {id:'wait',name:'低调等待',req:'无需物品',desc:'警戒 -1，时间消耗较多',timeCost:20,cond:()=>!restUsed.wait&&G.alert>=2,action:()=>{modAlert(-1);doRestOpt('wait',20,stopNum,nextScene);}},
+    {id:'wait',name:'低调等待',req:'无需物品',desc:'警戒 -1，时间消耗较多',timeCost:20,cond:()=>!restUsed.wait,action:()=>{modAlert(-1);doRestOpt('wait',20,stopNum,nextScene);}},
   ];
   let html=`<div class="rest-card"><div class="rest-title">🛸 临时停靠点</div><div class="rest-timer">⏱ 休息站时间窗口：<span id="rest-time-left">${timeLeft}</span> 分钟剩余</div><div class="rest-options">`;
   opts.forEach(o=>{
@@ -1070,11 +1031,11 @@ function flight_segment6(next){
   showScene('// FLIGHT-6 · 终点在望',
     'Gate-7的灯光出现在地平线上。\n你已经飞了很久了，久到忘记出发是什么感觉。\n你想起检查站外等候的那个老人，废弃区那个没有人听的频道，低氧下头疼欲裂的感觉，还有那个声音。\n货舱很安静。你不知道里面的箱子还完好不完好，里面的东西还在不在。\n但你还在飞。这就是答案。'+hpWarning()+timeWarning(),
     [
-      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静，但多花时间',cost:'体力 +5 · ⏱ 时间 -12min',action:()=>{
-        modHP(5);if(modTime(-12))return;next();
+      {title:'深呼吸，调整状态，稳定进场',hint:'最后的冷静',cost:'体力 +5 · ⏱ 时间 -5min',action:()=>{
+        modHP(5);if(modTime(-5))return;next();
       }},
-      {title:'「加速，越快越好」',hint:'省时间，但飞太快容易被雷达捕捉',cost:'⏱ 时间 -3min · 体力 -10 · 警戒 +1',action:()=>{
-        if(modTime(-3))return;if(modHP(-10))return;if(modAlert(1))return;next();
+      {title:'直接冲，不给自己犹豫的机会',hint:'一口气冲进去',cost:'警戒 +1',action:()=>{
+        if(modAlert(1))return;next();
       }}
     ]
   );
@@ -1134,8 +1095,7 @@ function scene_client_betrayal(boxMsg){
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
       }},
-      {title:'假装信号不好，没收到',hint:'委托人不确定你的态度，更加警惕',cost:'⚠ 警戒 +2',action:()=>{
-        if(modAlert(2))return;
+      {title:'假装信号不好，没收到',hint:'沉默也是一种拒绝',cost:'无消耗',action:()=>{
         G.choices.rejectedClient=true;
         scene12_gate7(boxMsg);
       }},
@@ -1360,8 +1320,8 @@ function showEnding(type){
   if(['pyrrhic','failure','success'].includes(type)){
     const costs=[];
     const hpLost=100-G.hp;
-    const timeLost=90-G.time;
-    const moneyLost=(G.role==='chen'?140:G.role==='vera'?100:G.role==='zero'?80:G.role==='seven'?90:90)-G.money;
+    const timeLost=120-G.time;
+    const moneyLost=(G.role==='chen'?160:G.role==='vera'?140:G.role==='zero'?100:G.role==='seven'?120:110)-G.money;
     if(hpLost>=60) costs.push('体力几乎耗尽');
     else if(hpLost>=35) costs.push('体力大量消耗');
     else if(hpLost>=15) costs.push('体力有所损耗');
@@ -1441,8 +1401,7 @@ function showEnding(type){
 }
 // ── RESTART ───────────────────────────────────────────────────────────────
 function restartGame(){
-  Object.keys(shopQty).forEach(k=>shopQty[k]=0);
-  Object.assign(G,{role:null,hp:100,time:90,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
+  Object.assign(G,{role:null,hp:100,time:120,alert:1,money:0,items:{},clues:[],choices:{},scene:0,oxygenUsed:false,fuelChecked:false,lastCrisis:false,passedRest1:false,babyHealth:100,babyFed:0,_scoreBreakdown:null,_finalScore:null,_triggerCount:0});
   // Reset narrative choice flags
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,forChildScore:false,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false};
   _dtrig=false;_ctrig=false;_strig=false;

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STATION-7 \u9057\u5931\u4fe1\u53f7</title>
+<style>
+:root{--bg:#0a0a0f;--cyber:#00f5ff;--neon:#ff006e;--warn:#ff6b00;--text:#c8d6e5;--dim:#4a5568;--panel:#0d1117;--border:#1a2332;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',Courier,monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,245,255,0.015) 2px,rgba(0,245,255,0.015) 4px);pointer-events:none;z-index:1000;}
+body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.5) 100%);pointer-events:none;z-index:999;}
+#game-wrapper{width:100%;max-width:820px;min-height:100vh;padding:12px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1;}
+#header{border:1px solid var(--cyber);border-radius:4px;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,245,255,0.03);box-shadow:0 0 18px rgba(0,245,255,0.12),inset 0 0 18px rgba(0,0,0,0.4);flex-wrap:wrap;gap:8px;}
+#header-title{font-size:1.3rem;font-weight:bold;color:var(--cyber);letter-spacing:0.15em;text-shadow:0 0 12px var(--cyber);}
+#header-scene{font-size:0.75rem;color:var(--neon);letter-spacing:0.1em;text-transform:uppercase;text-shadow:0 0 8px var(--neon);}
+#header-status{font-size:0.7rem;color:var(--warn);animation:blink 1.2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+#main-area{display:flex;flex-direction:column;gap:12px;flex:1;}
+#scene-canvas{width:100%;height:260px;border:1px solid var(--border);border-radius:4px;background:#050810;position:relative;overflow:hidden;transition:opacity 0.6s ease;box-shadow:inset 0 0 40px rgba(0,0,0,0.8);animation:scene-flicker 8s infinite;}
+@keyframes scene-flicker{0%,98%{opacity:1}99%{opacity:0.7}100%{opacity:1}}
+#scene-canvas.fade-out{opacity:0;}
+.cryo-pod{position:absolute;width:70px;height:150px;border:2px solid #1a3a5c;border-radius:35px 35px 10px 10px;background:linear-gradient(180deg,#0a1f30 0%,#051015 100%);box-shadow:0 0 20px rgba(0,100,200,0.2),inset 0 0 15px rgba(0,0,0,0.6);}
+.cryo-pod::before{content:'';position:absolute;top:15px;left:50%;transform:translateX(-50%);width:50px;height:80px;border-radius:25px 25px 5px 5px;background:rgba(0,150,255,0.04);border:1px solid rgba(0,150,255,0.2);}
+.cryo-pod.active-pod{border-color:var(--cyber);box-shadow:0 0 25px rgba(0,245,255,0.4),inset 0 0 15px rgba(0,245,255,0.08);}
+.cryo-pod.active-pod::before{background:rgba(0,245,255,0.08);border-color:rgba(0,245,255,0.4);}
+.cryo-light{position:absolute;width:8px;height:8px;border-radius:50%;animation:red-blink 0.8s infinite;}
+@keyframes red-blink{0%,100%{background:#ff2200;box-shadow:0 0 8px #ff2200}50%{background:#330000;box-shadow:none}}
+.cryo-floor{position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(0deg,#0a1520,transparent);border-top:1px solid #1a2332;}
+.cryo-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,80,120,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,80,120,0.06) 1px,transparent 1px);background-size:40px 40px;}
+.window-frame{position:absolute;right:40px;top:30px;width:90px;height:60px;border:2px solid #2a3a4a;border-radius:4px;background:#000510;overflow:hidden;}
+.window-frame::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 40% 40%,rgba(30,60,120,0.4),transparent 70%);}
+.star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;animation:twinkle var(--d,2s) infinite;}
+@keyframes twinkle{0%,100%{opacity:0.8}50%{opacity:0.2}}
+.crack-line{position:absolute;background:rgba(200,200,255,0.15);transform-origin:top left;}
+.ctrl-screen{position:absolute;border:1px solid #1a2060;border-radius:3px;background:#00000a;overflow:hidden;}
+.ctrl-screen .glitch-text{position:absolute;inset:0;font-size:0.45rem;color:rgba(0,245,255,0.25);font-family:'Courier New',monospace;padding:4px;word-break:break-all;line-height:1.2;animation:scroll-glitch 4s linear infinite;white-space:pre-wrap;}
+@keyframes scroll-glitch{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.ctrl-screen.on{border-color:var(--cyber);box-shadow:0 0 15px rgba(0,245,255,0.3);}
+.ctrl-screen.on .glitch-text{color:rgba(0,245,255,0.6);}
+.ctrl-desk{position:absolute;bottom:0;left:0;right:0;height:55px;background:linear-gradient(0deg,#0d1020 0%,#080810 100%);border-top:1px solid #1a2040;}
+.ctrl-btn-led{position:absolute;border-radius:2px;background:#0a1530;border:1px solid #1a3060;}
+.ctrl-mainframe{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);width:80px;height:130px;background:#050510;border:2px solid #1a2060;border-radius:4px;display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:6px;}
+.ctrl-mainframe .core-label{font-size:0.45rem;color:var(--dim);letter-spacing:0.2em;}
+.ctrl-mainframe.active{border-color:var(--cyber);box-shadow:0 0 20px rgba(0,245,255,0.4);}
+.ctrl-mainframe.active .core-label{color:var(--cyber);text-shadow:0 0 8px var(--cyber);}
+.led{width:6px;height:6px;border-radius:50%;background:var(--dim);display:inline-block;}
+.led.on-g{background:#00ff88;box-shadow:0 0 5px #00ff88;}
+.led.on-r{background:#ff2200;box-shadow:0 0 5px #ff2200;animation:blink 0.6s infinite;}
+.led.on-b{background:var(--cyber);box-shadow:0 0 5px var(--cyber);}
+.led-row{display:flex;gap:4px;padding:2px 0;}
+.escape-door{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:160px;height:160px;border-radius:50%;border:3px solid #1a3a5c;background:radial-gradient(circle,#0a1520 0%,#030810 100%);box-shadow:0 0 30px rgba(0,50,100,0.3);}
+.escape-door .ring1{position:absolute;inset:10px;border-radius:50%;border:2px solid #1a2a40;}
+.escape-door .ring2{position:absolute;inset:25px;border-radius:50%;border:1px solid #0f1e30;background:#020508;}
+.door-ring-anim{position:absolute;border-radius:50%;border:1px solid rgba(0,245,255,0.12);animation:rotate-ring 8s linear infinite;}
+@keyframes rotate-ring{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+.door-bolt{position:absolute;background:#1a3a5c;border-radius:2px;}
+.escape-door.open{border-color:var(--cyber)!important;box-shadow:0 0 40px rgba(0,245,255,0.5),inset 0 0 30px rgba(0,245,255,0.1)!important;background:radial-gradient(circle,rgba(0,245,255,0.1) 0%,#030810 100%)!important;}
+.escape-door.open .ring1{border-color:rgba(0,245,255,0.4);}
+.escape-door.open .ring2{background:rgba(0,245,255,0.05);}
+#narrative-box{border:1px solid var(--border);border-left:3px solid var(--cyber);border-radius:0 4px 4px 0;background:rgba(0,245,255,0.02);padding:14px 16px;min-height:80px;font-size:0.88rem;line-height:1.75;color:var(--text);position:relative;}
+#narrative-box::before{content:'> ';color:var(--cyber);font-weight:bold;}
+#narrative-text{display:inline;}
+#cursor{display:inline-block;width:8px;height:14px;background:var(--cyber);animation:blink 0.6s infinite;vertical-align:text-bottom;margin-left:2px;}
+#hotspots{display:flex;flex-wrap:wrap;gap:10px;padding:10px 0;}
+.hotspot-btn{background:rgba(0,0,0,0.6);border:1px solid var(--dim);border-radius:3px;color:var(--text);font-family:'Courier New',monospace;font-size:0.78rem;padding:8px 14px;cursor:pointer;transition:all 0.2s ease;text-transform:uppercase;letter-spacing:0.08em;position:relative;overflow:hidden;}
+.hotspot-btn:hover{border-color:var(--cyber);color:var(--cyber);box-shadow:0 0 12px rgba(0,245,255,0.4),inset 0 0 8px rgba(0,245,255,0.05);text-shadow:0 0 8px var(--cyber);}
+.hotspot-btn:active{transform:scale(0.97);}
+.hotspot-btn.disabled{opacity:0.35;cursor:not-allowed;border-color:#1a2332;}
+.hotspot-btn.disabled:hover{border-color:var(--warn);color:var(--warn);box-shadow:0 0 8px rgba(255,107,0,0.3);text-shadow:0 0 6px var(--warn);}
+.hotspot-btn.highlight{border-color:var(--neon);animation:neon-pulse 1.5s infinite;}
+@keyframes neon-pulse{0%,100%{box-shadow:0 0 8px rgba(255,0,110,0.3)}50%{box-shadow:0 0 20px rgba(255,0,110,0.7)}}
+#inventory{position:fixed;bottom:16px;right:16px;width:160px;background:rgba(10,10,20,0.92);border:1px solid var(--cyber);border-radius:4px;padding:8px 10px;box-shadow:0 0 16px rgba(0,245,255,0.2);z-index:100;backdrop-filter:blur(4px);}
+#inv-title{font-size:0.65rem;color:var(--cyber);letter-spacing:0.15em;border-bottom:1px solid var(--border);padding-bottom:5px;margin-bottom:6px;text-transform:uppercase;}
+.inv-item{font-size:0.72rem;color:var(--text);padding:3px 0;display:flex;align-items:center;gap:6px;animation:item-appear 0.3s ease;}
+@keyframes item-appear{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+.inv-item::before{content:'\25b8';color:var(--cyber);}
+.inv-empty{font-size:0.65rem;color:var(--dim);font-style:italic;}
+#sys-log{border:1px solid var(--border);border-radius:4px;background:rgba(0,0,0,0.4);padding:8px 12px;font-size:0.68rem;color:var(--dim);max-height:70px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;}
+#sys-log::-webkit-scrollbar{width:3px;}
+#sys-log::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px;}
+.log-line{display:flex;gap:8px;}
+.log-time{color:var(--warn);flex-shrink:0;}
+.log-success{color:#00ff88;}
+.log-error{color:var(--neon);}
+.log-warn{color:var(--warn);}
+#password-screen{display:none;flex-direction:column;align-items:center;gap:16px;padding:20px;border:1px solid var(--cyber);border-radius:4px;background:rgba(0,245,255,0.02);}
+#password-screen.show{display:flex;}
+#pwd-label{font-size:0.8rem;color:var(--cyber);letter-spacing:0.2em;text-align:center;}
+#pwd-display{font-size:2.5rem;letter-spacing:0.5em;color:var(--cyber);text-shadow:0 0 20px var(--cyber);background:#000;border:1px solid var(--cyber);border-radius:4px;padding:8px 24px;min-width:200px;text-align:center;font-family:'Courier New',monospace;}
+#pwd-keypad{display:grid;grid-template-columns:repeat(3,56px);gap:8px;}
+.key-btn{width:56px;height:44px;background:#0a1020;border:1px solid #1a2a40;border-radius:3px;color:var(--text);font-family:'Courier New',monospace;font-size:1rem;cursor:pointer;transition:all 0.15s;}
+.key-btn:hover{border-color:var(--cyber);color:var(--cyber);box-shadow:0 0 10px rgba(0,245,255,0.3);}
+.key-btn:active{transform:scale(0.93);background:rgba(0,245,255,0.1);}
+.key-btn.del-btn{color:var(--warn);}
+.key-btn.del-btn:hover{border-color:var(--warn);box-shadow:0 0 10px rgba(255,107,0,0.3);}
+.key-btn.enter-btn{color:#00ff88;}
+.key-btn.enter-btn:hover{border-color:#00ff88;box-shadow:0 0 10px rgba(0,255,136,0.3);}
+#pwd-error{font-size:0.75rem;color:var(--neon);text-shadow:0 0 8px var(--neon);min-height:18px;}
+#ending-screen{display:none;position:fixed;inset:0;background:#000;z-index:500;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:20px;}
+#ending-screen.show{display:flex;animation:fade-in-end 2s ease;}
+@keyframes fade-in-end{from{opacity:0}to{opacity:1}}
+.e-star{position:absolute;width:2px;height:2px;background:white;border-radius:50%;animation:twinkle var(--d,3s) infinite;}
+#ending-title{font-size:clamp(1.2rem,4vw,2rem);color:var(--cyber);text-shadow:0 0 30px var(--cyber);text-align:center;letter-spacing:0.1em;z-index:1;}
+#ending-sub{font-size:clamp(0.75rem,2vw,0.95rem);color:var(--text);text-align:center;max-width:500px;line-height:2;z-index:1;padding:0 16px;}
+#ending-question{font-size:clamp(0.8rem,2.5vw,1rem);color:var(--neon);text-shadow:0 0 15px var(--neon);text-align:center;z-index:1;letter-spacing:0.08em;}
+#ending-restart{background:transparent;border:1px solid var(--cyber);color:var(--cyber);font-family:'Courier New',monospace;font-size:0.8rem;padding:10px 28px;cursor:pointer;letter-spacing:0.15em;z-index:1;transition:all 0.2s;text-transform:uppercase;margin-top:10px;}
+#ending-restart:hover{background:rgba(0,245,255,0.1);box-shadow:0 0 20px rgba(0,245,255,0.3);}
+#toast{position:fixed;top:20px;right:16px;background:rgba(0,245,255,0.08);border:1px solid var(--cyber);border-radius:4px;padding:10px 16px;font-size:0.78rem;color:var(--cyber);z-index:200;pointer-events:none;opacity:0;transform:translateX(20px);transition:all 0.3s ease;max-width:240px;text-align:right;}
+#toast.show{opacity:1;transform:translateX(0);}
+#progress-bar{height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--cyber),var(--neon));border-radius:1px;transition:width 0.5s ease;box-shadow:0 0 6px var(--cyber);}
+@media(max-width:600px){#scene-canvas{height:200px;}#inventory{width:130px;bottom:10px;right:8px;}#header-title{font-size:1rem;}.hotspot-btn{font-size:0.7rem;padding:7px 10px;}}
+</style>
+</head>
+<body>
+<div id="game-wrapper">
+  <!-- 顶部标题栏 -->
+  <div id="header">
+    <div id="header-title">&#x25a0; STATION-7 &#x9057;&#x5931;&#x4fe1;&#x53f7;</div>
+    <div id="header-scene">SCENE: <span id="scene-name">&#x51ac;&#x7720;&#x821f;</span></div>
+    <div id="header-status">&#x26a0; EMERGENCY ALERT ACTIVE</div>
+  </div>
+  <!-- 进度条 -->
+  <div id="progress-bar"><div id="progress-fill" style="width:33%"></div></div>
+  <!-- 场景画布 -->
+  <div id="scene-canvas"></div>
+  <!-- 叙事文字区 -->
+  <div id="narrative-box"><span id="narrative-text"></span><span id="cursor"></span></div>
+  <!-- 热区按钮 -->
+  <div id="hotspots"></div>
+  <!-- 密码输入界面（场景3使用） -->
+  <div id="password-screen">
+    <div id="pwd-label">&#x8f93;&#x5165;&#x8fdb;&#x5165;&#x5bc6;&#x7801; / ENTER ACCESS CODE</div>
+    <div id="pwd-display">____</div>
+    <div id="pwd-keypad">
+      <button class="key-btn" onclick="pwdInput('1')">1</button>
+      <button class="key-btn" onclick="pwdInput('2')">2</button>
+      <button class="key-btn" onclick="pwdInput('3')">3</button>
+      <button class="key-btn" onclick="pwdInput('4')">4</button>
+      <button class="key-btn" onclick="pwdInput('5')">5</button>
+      <button class="key-btn" onclick="pwdInput('6')">6</button>
+      <button class="key-btn" onclick="pwdInput('7')">7</button>
+      <button class="key-btn" onclick="pwdInput('8')">8</button>
+      <button class="key-btn" onclick="pwdInput('9')">9</button>
+      <button class="key-btn del-btn" onclick="pwdDel()">DEL</button>
+      <button class="key-btn" onclick="pwdInput('0')">0</button>
+      <button class="key-btn enter-btn" onclick="pwdConfirm()">OK</button>
+    </div>
+    <div id="pwd-error"></div>
+  </div>
+  <!-- 系统日志 -->
+  <div id="sys-log"></div>
+</div>
+<!-- 道具栏 -->
+<div id="inventory">
+  <div id="inv-title">&#x25a0; INVENTORY</div>
+  <div id="inv-items"><span class="inv-empty">&#x7a7a;</span></div>
+</div>
+<!-- 通知弹窗 -->
+<div id="toast"></div>
+<!-- 结局界面 -->
+<div id="ending-screen"></div>
+<script>
+// =============================================
+// STATION-7 游戏核心逻辑
+// =============================================
+
+// --- 游戏状态 ---
+const G = {
+  scene: 1,          // 当前场景
+  inventory: [],     // 道具列表
+  flags: {
+    panelActivated: false,  // 场景2主机是否激活
+    commPlayed: false,      // 通讯日志是否已播放
+    windowViewed: false,    // 舷窗是否已查看
+  },
+  typing: false,     // 是否正在打字机效果
+  pwdInput: '',      // 密码输入
+};
+
+// --- 游戏文本内容 ---
+const TEXTS = {
+  scene1_enter: "【系统报告：冬眠周期异常中断】\n你从长达 847 天的冬眠中被强制唤醒。头痛欲裂，视线模糊。应急红灯将整个舱室染成血色，某处警报声不停嚎叫。冬眠液还未完全排出，你的每一次呼吸都像在吸玻璃碴。\n\n你缓缓坐起——STATION-7 出了什么事？",
+  panel_check: "控制面板屏幕已损坏，大半电路烧毁。但在右侧抽屉的废墟中，你找到了一张挂在金属链上的【访问卡】。卡面印着：\nAUTH-LEVEL: 3 / ENGINEER\n发卡人：Dr. Kai Reeves\n\n卡是冰凉的。",
+  panel_repeat: "控制面板里已经没有更多东西了。【访问卡】已在你手中。",
+  window_view: "破碎的舷窗外是无边的黑暗。\n\n但不对——那里应该有地球。\n\n你贴近玻璃，碎裂的纹路在你眼前蔓延。外面什么都没有。只有星点，无数寒冷的星点，和一片你说不清楚的、令人窒息的……空旷。\n\n站内广播突然嘶哑地响起：[SYSTEM]  NO CREW SIGNAL DETECTED  [SYSTEM]",
+  exit_no_card: "逃生指示灯箭头指向主控室方向。系统提示：前往主控室需要持有有效访问卡。\n\n你低头看了看空荡荡的手——你还没找到访问卡。",
+  exit_with_card: "你握紧访问卡，沿着血红色的指示灯向主控室走去...\n\n[场景切换中...]",
+  scene2_enter: "主控室比你想象中更惨烈。\n\n半数屏幕已经熄灭，其余屏幕上滚动着你看不懂的错误代码。椅子打翻在地，地板上有什么黑色的污渍，你不敢去想那是什么。中央主机的风扇还在转，发出嗡嗡的低鸣，像一个垂死者的喘息。\n\n空气中有焦糊的味道。",
+  mainframe_no_card: "中央主机的接口面板需要权限认证。接口处有一个卡槽——\n\n[错误] AUTH_REQUIRED: LEVEL 3+\n你需要一张访问卡。",
+  mainframe_activate: "你将访问卡插入卡槽。\n\n系统沉默了三秒。\n\n然后，主机屏幕猛地亮起，大量数据流涌现：\nAUTH: DR.KAI.REEVES ✓\nACCESS GRANTED\n\n在数据流底部，一行文字一直在循环闪烁：\n\n> EMERGENCY ESCAPE CODE: 7743\n> EMERGENCY ESCAPE CODE: 7743",
+  mainframe_repeat: "主机屏幕上数据还在滚动。关键信息闪烁着：\n\n> EMERGENCY ESCAPE CODE: 7743",
+  comm_play: "通讯终端静电嘶嘶，然后一段残损的语音日志开始播放——\n\n[日志时间戳：CYCLE-847, 03:17]\n[说话人：未知]\n\n...我不知道还有没有人能听到这条消息...实验出了问题，CORE-AI 开始...它开始...（信号中断 3.2秒）...把所有人都...上帝啊...如果你醒了，记住——不要相信任何系统提示，不要...（爆音干扰）...逃生码是 7-7-4-3，快走，不要停...\n\n[日志结束 — 文件损坏79%]",
+  comm_repeat: "通讯终端再次播放那段残损的日志。\n\n...逃生码是 7-7-4-3，快走，不要停...\n\n日志结束。静电再次充满空气。",
+  escape_no_code: "逃生舱门是厚重的合金圆门，旁边有一个数字键盘。\n\n[系统提示] 输入4位紧急逃生码以解锁。\n\n你还不知道密码。",
+  escape_with_code: "逃生舱门旁的数字键盘在等待输入...\n\n[你在脑海中回想着那段语音：\"逃生码是 7-7-4-3\"]",
+  scene3_enter: "你站在逃生舱门前。\n\n这扇沉重的圆门是你与自由之间唯一的屏障。键盘上的数字在红色应急灯下忽明忽暗。\n\n你深吸一口气，将手指悬在按键上方。这里究竟发生了什么？那个未知说话者最后去哪了？那段语音日志里被干扰掉的话是什么？\n\n这些问题，你现在没有答案。但你知道你需要活着出去，才能有机会找到答案。",
+  pwd_wrong: "错误的密码。门锁系统发出低沉的警报音。\n\n[ACCESS DENIED]\n请重新输入。",
+};
+
+// --- 系统日志时间 ---
+let logTime = 0;
+function sysLog(msg, type='') {
+  logTime++;
+  const log = document.getElementById('sys-log');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  const t = String(logTime).padStart(4,'0');
+  line.innerHTML = `<span class="log-time">[${t}]</span><span class="${type}">${msg}</span>`;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+// --- 打字机效果 ---
+let typeTimer = null;
+function typeText(text, callback) {
+  const el = document.getElementById('narrative-text');
+  const cursor = document.getElementById('cursor');
+  el.textContent = '';
+  cursor.style.display = 'inline-block';
+  G.typing = true;
+  let i = 0;
+  if (typeTimer) clearInterval(typeTimer);
+  typeTimer = setInterval(() => {
+    if (i < text.length) {
+      el.textContent += text[i];
+      i++;
+    } else {
+      clearInterval(typeTimer);
+      typeTimer = null;
+      G.typing = false;
+      if (callback) callback();
+    }
+  }, 22);
+}
+
+// --- 即时显示文本 ---
+function setNarrative(text) {
+  if (typeTimer) clearInterval(typeTimer);
+  G.typing = false;
+  document.getElementById('narrative-text').textContent = '';
+  document.getElementById('cursor').style.display = 'inline-block';
+  typeText(text);
+}
+
+// --- 道具系统 ---
+function addItem(name) {
+  if (G.inventory.includes(name)) return;
+  G.inventory.push(name);
+  renderInventory();
+  showToast('获得道具：' + name);
+  sysLog('ITEM ACQUIRED: ' + name, 'log-success');
+}
+
+function hasItem(name) {
+  return G.inventory.includes(name);
+}
+
+function renderInventory() {
+  const el = document.getElementById('inv-items');
+  if (G.inventory.length === 0) {
+    el.innerHTML = '<span class="inv-empty">空</span>';
+  } else {
+    el.innerHTML = G.inventory.map(i => `<div class="inv-item">${i}</div>`).join('');
+  }
+}
+
+// --- Toast 通知 ---
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// === 场景构建函数 ===
+
+// --- 场景1：冬眠舱 ---
+function buildScene1() {
+  const canvas = document.getElementById('scene-canvas');
+  canvas.style.background = 'linear-gradient(180deg, #050810 0%, #0a1520 100%)';
+  // 网格背景
+  const grid = document.createElement('div');
+  grid.className = 'cryo-grid';
+  canvas.appendChild(grid);
+  // 冬眠舱轮廓（3个）
+  const pods = [
+    {left:'60px', top:'40px', active: false},
+    {left:'155px', top:'30px', active: true},
+    {left:'250px', top:'40px', active: false},
+  ];
+  pods.forEach((p,i) => {
+    const pod = document.createElement('div');
+    pod.className = 'cryo-pod' + (p.active ? ' active-pod' : '');
+    pod.style.left = p.left;
+    pod.style.top = p.top;
+    canvas.appendChild(pod);
+    // 指示灯
+    const light = document.createElement('div');
+    light.className = 'cryo-light';
+    light.style.left = (parseInt(p.left) + 28) + 'px';
+    light.style.top = (parseInt(p.top) + 135) + 'px';
+    light.style.animationDelay = (i * 0.3) + 's';
+    canvas.appendChild(light);
+  });
+  // 舷窗
+  const win = document.createElement('div');
+  win.className = 'window-frame';
+  win.style.cssText = 'position:absolute;right:40px;top:30px;width:90px;height:60px;border:2px solid #2a3a4a;border-radius:4px;background:#000510;overflow:hidden;';
+  // 星星
+  for(let i=0;i<12;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*86}px;top:${Math.random()*56}px;--d:${1.5+Math.random()*2}s;animation-delay:${Math.random()*2}s;opacity:${0.4+Math.random()*0.6};`;
+    win.appendChild(s);
+  }
+  // 裂痕
+  const crack = document.createElement('div');
+  crack.style.cssText = 'position:absolute;top:10px;left:20px;width:2px;height:45px;background:rgba(200,200,255,0.15);transform:rotate(25deg);box-shadow:5px -5px 0 rgba(200,200,255,0.06),-8px 10px 0 rgba(200,200,255,0.05);';
+  win.appendChild(crack);
+  canvas.appendChild(win);
+  // 地板
+  const floor = document.createElement('div');
+  floor.className = 'cryo-floor';
+  canvas.appendChild(floor);
+  // 逃生指示箭头
+  const arrow = document.createElement('div');
+  arrow.style.cssText = 'position:absolute;right:20px;bottom:50px;font-size:0.6rem;color:var(--warn);letter-spacing:0.1em;text-shadow:0 0 6px var(--warn);animation:blink 1s infinite;';
+  arrow.textContent = '► ESCAPE ROUTE';
+  canvas.appendChild(arrow);
+}
+
+// --- 场景2：主控室 ---
+function buildScene2() {
+  const canvas = document.getElementById('scene-canvas');
+  canvas.style.background = 'linear-gradient(180deg, #050508 0%, #0a0a18 100%)';
+  const glitchStr = '01001011ERROR0110SYSTEM_FAILURE10110101CORE_BREACH0101\n01001011ERROR0110SYSTEM_FAILURE10110101CORE_BREACH0101\n';
+  // 屏幕组
+  const screens = [
+    {left:'20px',top:'20px',w:'140px',h:'90px',on:false},
+    {left:'175px',top:'15px',w:'180px',h:'100px',on:false},
+    {left:'370px',top:'20px',w:'120px',h:'85px',on:false},
+    {left:'505px',top:'18px',w:'130px',h:'92px',on:true},
+  ];
+  screens.forEach(s => {
+    const scr = document.createElement('div');
+    scr.className = 'ctrl-screen' + (s.on ? ' on' : '');
+    scr.style.cssText = `left:${s.left};top:${s.top};width:${s.w};height:${s.h};`;
+    const gt = document.createElement('div');
+    gt.className = 'glitch-text';
+    gt.textContent = glitchStr.repeat(8);
+    scr.appendChild(gt);
+    canvas.appendChild(scr);
+  });
+  // 中央主机
+  const mf = document.createElement('div');
+  mf.className = 'ctrl-mainframe' + (G.flags.panelActivated ? ' active' : '');
+  mf.id = 'scene2-mainframe';
+  const label = document.createElement('div');
+  label.className = 'core-label';
+  label.textContent = 'CORE-UNIT';
+  mf.appendChild(label);
+  // LED行
+  for(let r=0;r<4;r++){
+    const row = document.createElement('div');
+    row.className = 'led-row';
+    for(let c=0;c<4;c++){
+      const led = document.createElement('div');
+      const cls = G.flags.panelActivated
+        ? ['on-b','on-g','on-b','on-g'][c]
+        : ['on-r','','on-r',''][c];
+      led.className = 'led' + (cls ? ' '+cls : '');
+      row.appendChild(led);
+    }
+    mf.appendChild(row);
+  }
+  canvas.appendChild(mf);
+  // 操作台
+  const desk = document.createElement('div');
+  desk.className = 'ctrl-desk';
+  // 按钮LED
+  const btns = [
+    {l:'30px',t:'10px',w:'20px',h:'12px',lit:'warn-lit'},
+    {l:'60px',t:'8px',w:'30px',h:'14px',lit:''},
+    {l:'100px',t:'10px',w:'20px',h:'12px',lit:'warn-lit'},
+    {l:'500px',t:'8px',w:'40px',h:'14px',lit:'lit'},
+    {l:'550px',t:'10px',w:'20px',h:'12px',lit:''},
+  ];
+  btns.forEach(b => {
+    const btn = document.createElement('div');
+    btn.className = 'ctrl-btn-led';
+    btn.style.cssText = `left:${b.l};top:${b.t};width:${b.w};height:${b.h};`;
+    if(b.lit==='warn-lit'){btn.style.background='rgba(255,107,0,0.15)';btn.style.borderColor='var(--warn)';btn.style.boxShadow='0 0 6px rgba(255,107,0,0.4)';}
+    else if(b.lit==='lit'){btn.style.background='rgba(0,245,255,0.15)';btn.style.borderColor='var(--cyber)';btn.style.boxShadow='0 0 6px rgba(0,245,255,0.4)';}
+    desk.appendChild(btn);
+  });
+  canvas.appendChild(desk);
+}
+
+// --- 场景3：逃生舱 ---
+function buildScene3() {
+  const canvas = document.getElementById('scene-canvas');
+  canvas.style.background = 'radial-gradient(circle at center, #050a15 0%, #030508 100%)';
+  // 背景管道装饰
+  for(let i=0;i<3;i++){
+    const pipe = document.createElement('div');
+    pipe.style.cssText = `position:absolute;height:4px;background:rgba(0,80,120,0.3);left:0;right:0;top:${60+i*60}px;`;
+    canvas.appendChild(pipe);
+  }
+  // 主圆门
+  const door = document.createElement('div');
+  door.className = 'escape-door' + (G.flags.doorOpen ? ' open' : '');
+  door.id = 'escape-door';
+  const r1 = document.createElement('div'); r1.className='ring1'; door.appendChild(r1);
+  const r2 = document.createElement('div'); r2.className='ring2'; door.appendChild(r2);
+  // 旋转装饰环
+  const dr = document.createElement('div');
+  dr.className = 'door-ring-anim';
+  dr.style.cssText = 'left:50%;top:50%;width:140px;height:140px;margin-left:-70px;margin-top:-70px;position:absolute;';
+  dr.style.left='50%'; dr.style.top='50%';
+  canvas.appendChild(door);
+  // 门闩装饰
+  const bolts = [
+    {left:'calc(50% - 80px)',top:'calc(50% - 5px)',w:'15px',h:'10px'},
+    {left:'calc(50% + 65px)',top:'calc(50% - 5px)',w:'15px',h:'10px'},
+    {left:'calc(50% - 5px)',top:'calc(50% - 80px)',w:'10px',h:'15px'},
+    {left:'calc(50% - 5px)',top:'calc(50% + 65px)',w:'10px',h:'15px'},
+  ];
+  bolts.forEach(b => {
+    const bolt = document.createElement('div');
+    bolt.className = 'door-bolt';
+    bolt.style.cssText = `left:${b.left};top:${b.top};width:${b.w};height:${b.h};`;
+    canvas.appendChild(bolt);
+  });
+  // 警告标签
+  const warn = document.createElement('div');
+  warn.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--warn);letter-spacing:0.12em;text-shadow:0 0 6px var(--warn);text-align:center;';
+  warn.textContent = 'EMERGENCY ESCAPE POD — AUTH REQUIRED';
+  canvas.appendChild(warn);
+}
+
+// === 场景渲染 & 切换 ===
+function clearCanvas() {
+  document.getElementById('scene-canvas').innerHTML = '';
+}
+
+function goScene(n, skipAnim) {
+  const canvas = document.getElementById('scene-canvas');
+  const pw = document.getElementById('password-screen');
+  pw.classList.remove('show');
+  if (!skipAnim) {
+    canvas.classList.add('fade-out');
+    setTimeout(() => {
+      canvas.classList.remove('fade-out');
+      G.scene = n;
+      renderScene(n);
+    }, 600);
+  } else {
+    G.scene = n;
+    renderScene(n);
+  }
+}
+
+function renderScene(n) {
+  clearCanvas();
+  document.getElementById('hotspots').innerHTML = '';
+  const pw = document.getElementById('password-screen');
+  pw.classList.remove('show');
+  // 更新进度条
+  document.getElementById('progress-fill').style.width = (n * 33.33) + '%';
+  if (n === 1) {
+    document.getElementById('scene-name').textContent = '\u51ac\u7720\u821f · CRYO BAY';
+    buildScene1();
+    setNarrative(TEXTS.scene1_enter);
+    renderHotspots1();
+    sysLog('ENTER: CRYO BAY', 'log-warn');
+  } else if (n === 2) {
+    document.getElementById('scene-name').textContent = '\u4e3b\u63a7\u5ba4 · CONTROL ROOM';
+    buildScene2();
+    setNarrative(TEXTS.scene2_enter);
+    renderHotspots2();
+    sysLog('ENTER: CONTROL ROOM', 'log-warn');
+  } else if (n === 3) {
+    document.getElementById('scene-name').textContent = '\u9003\u751f\u821f · ESCAPE POD';
+    buildScene3();
+    setNarrative(TEXTS.scene3_enter);
+    renderHotspots3();
+    pw.classList.add('show');
+    G.pwdInput = '';
+    updatePwdDisplay();
+    sysLog('ENTER: ESCAPE POD — CODE REQUIRED', 'log-warn');
+  }
+}
+
+// === 热区按钮渲染 ===
+function renderHotspots1() {
+  const hs = document.getElementById('hotspots');
+  hs.innerHTML = '';
+  // 控制面板
+  const btn1 = makeBtn('\u2662 [\u63a7\u5236\u9762\u677f] CONTROL PANEL', () => {
+    if (!hasItem('\u8bbf\u95ee\u5361')) {
+      setNarrative(TEXTS.panel_check);
+      setTimeout(() => addItem('\u8bbf\u95ee\u5361'), 1500);
+      sysLog('INTERACT: Control Panel', '');
+      btn1.classList.add('highlight');
+      setTimeout(() => btn1.classList.remove('highlight'), 3000);
+    } else {
+      setNarrative(TEXTS.panel_repeat);
+      sysLog('INTERACT: Control Panel — already looted', '');
+    }
+  });
+  hs.appendChild(btn1);
+  // 舷窗
+  const btn2 = makeBtn('\u2662 [\u70b4\u88c2\u8239\u7a97] CRACKED VIEWPORT', () => {
+    G.flags.windowViewed = true;
+    setNarrative(TEXTS.window_view);
+    sysLog('OBSERVE: Cracked Viewport — anomaly detected', 'log-warn');
+  });
+  hs.appendChild(btn2);
+  // 逃生指示灯
+  const btn3 = makeBtn('\u25ba [\u9003\u751f\u6307\u793a\u706f] EMERGENCY LIGHT', () => {
+    if (!hasItem('\u8bbf\u95ee\u5361')) {
+      setNarrative(TEXTS.exit_no_card);
+      sysLog('ACCESS: Corridor — denied, no auth card', 'log-error');
+      showToast('\u9700\u8981\u8bbf\u95ee\u5361');
+      btn3.classList.add('disabled');
+      setTimeout(() => btn3.classList.remove('disabled'), 2000);
+    } else {
+      setNarrative(TEXTS.exit_with_card);
+      sysLog('ACCESS: Corridor — auth card accepted', 'log-success');
+      setTimeout(() => goScene(2), 1800);
+    }
+  }, !hasItem('\u8bbf\u95ee\u5361') ? 'locked' : '');
+  hs.appendChild(btn3);
+}
+
+function renderHotspots2() {
+  const hs = document.getElementById('hotspots');
+  hs.innerHTML = '';
+  // 中央主机
+  const btn1 = makeBtn('\u2666 [\u4e2d\u592e\u4e3b\u673a] MAINFRAME CORE', () => {
+    if (!hasItem('\u8bbf\u95ee\u5361')) {
+      setNarrative(TEXTS.mainframe_no_card);
+      sysLog('ACCESS: Mainframe — denied, no auth card', 'log-error');
+      showToast('\u8bbf\u95ee\u88ab\u62d2\u7edd');
+    } else if (!G.flags.panelActivated) {
+      G.flags.panelActivated = true;
+      setNarrative(TEXTS.mainframe_activate);
+      sysLog('MAINFRAME ACTIVATED — emergency code retrieved', 'log-success');
+      // 更新场景中主机外观
+      const mf = document.getElementById('scene2-mainframe');
+      if(mf){ mf.classList.add('active'); }
+      showToast('\u83b7\u5f97\u5bc6\u7801\uff1a7743');
+      // 更新按钮提示
+      setTimeout(() => renderHotspots2(), 100);
+    } else {
+      setNarrative(TEXTS.mainframe_repeat);
+      sysLog('MAINFRAME: code still active — 7743', 'log-success');
+    }
+  });
+  hs.appendChild(btn1);
+  // 通讯终端
+  const btn2 = makeBtn('\u25a0 [\u901a\u8baf\u7ec8\u7aef] COMM TERMINAL', () => {
+    if (!G.flags.commPlayed) {
+      G.flags.commPlayed = true;
+      setNarrative(TEXTS.comm_play);
+      sysLog('PLAYBACK: voice log — WARNING content disturbing', 'log-warn');
+    } else {
+      setNarrative(TEXTS.comm_repeat);
+      sysLog('REPLAY: voice log', '');
+    }
+  });
+  hs.appendChild(btn2);
+  // 逃生舱门
+  const locked = !G.flags.panelActivated;
+  const btn3 = makeBtn('\u25ba [\u9003\u751f\u821f\u95e8] ESCAPE HATCH' + (locked ? '' : ' — CODE READY'), () => {
+    if (!G.flags.panelActivated) {
+      setNarrative(TEXTS.escape_no_code);
+      sysLog('ACCESS: Escape Hatch — code unknown', 'log-error');
+      showToast('\u9700\u8981\u5bc6\u7801');
+    } else {
+      setNarrative(TEXTS.escape_with_code);
+      sysLog('ACCESS: Escape Hatch — code 7743 in memory', 'log-success');
+      setTimeout(() => goScene(3), 1800);
+    }
+  }, locked ? 'locked' : '');
+  hs.appendChild(btn3);
+}
+
+function renderHotspots3() {
+  const hs = document.getElementById('hotspots');
+  hs.innerHTML = '';
+  const btn = makeBtn('\u2190 [\u8fd4\u56de\u4e3b\u63a7\u5ba4] BACK TO CONTROL', () => {
+    goScene(2);
+  });
+  hs.appendChild(btn);
+}
+
+// --- 创建热区按钮辅助函数 ---
+function makeBtn(label, onclick, extraClass) {
+  const btn = document.createElement('button');
+  btn.className = 'hotspot-btn' + (extraClass ? ' ' + extraClass : '');
+  btn.innerHTML = label;
+  btn.addEventListener('click', onclick);
+  return btn;
+}
+
+// === 密码系统 ===
+function updatePwdDisplay() {
+  const disp = document.getElementById('pwd-display');
+  const shown = G.pwdInput.padEnd(4, '_');
+  disp.textContent = shown;
+}
+
+function pwdInput(digit) {
+  if (G.pwdInput.length < 4) {
+    G.pwdInput += digit;
+    updatePwdDisplay();
+    document.getElementById('pwd-error').textContent = '';
+  }
+}
+
+function pwdDel() {
+  G.pwdInput = G.pwdInput.slice(0, -1);
+  updatePwdDisplay();
+  document.getElementById('pwd-error').textContent = '';
+}
+
+function pwdConfirm() {
+  if (G.pwdInput.length < 4) {
+    document.getElementById('pwd-error').textContent = '[ERROR] \u8bf7\u8f93\u51654\u4f4d\u5bc6\u7801';
+    return;
+  }
+  if (G.pwdInput === '7743') {
+    // 成功
+    document.getElementById('pwd-error').textContent = '';
+    sysLog('ESCAPE CODE ACCEPTED — LAUNCHING POD', 'log-success');
+    showToast('\u8fd4\u56de\u6210\u529f！');
+    // 动画：舱门打开
+    const door = document.getElementById('escape-door');
+    if (door) door.classList.add('open');
+    setNarrative('密码正确——\n\n[ACCESS GRANTED]\n\n逃生舱门发出沉重的机械撞击声，一道道锁扣依次弹开。蓝色的气闸光芒从缝隙中漫出来。\n\n你用尽全身力气推开了那扇门。');
+    setTimeout(() => showEnding(), 3500);
+  } else {
+    G.pwdInput = '';
+    updatePwdDisplay();
+    document.getElementById('pwd-error').textContent = '[ACCESS DENIED] \u5bc6\u7801\u9519\u8bef\uff0c\u8bf7\u91cd\u8bd5';
+    sysLog('ESCAPE CODE REJECTED — ' + G.pwdInput, 'log-error');
+    // 红色闪烁效果
+    const disp = document.getElementById('pwd-display');
+    disp.style.color = 'var(--neon)';
+    disp.style.borderColor = 'var(--neon)';
+    setTimeout(() => {
+      disp.style.color = 'var(--cyber)';
+      disp.style.borderColor = 'var(--cyber)';
+    }, 600);
+  }
+}
+
+// === 结局界面 ===
+function showEnding() {
+  const end = document.getElementById('ending-screen');
+  end.innerHTML = '';
+  // 星空背景
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'e-star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*3}s;opacity:${0.3+Math.random()*0.7};width:${Math.random()<0.1?3:2}px;height:${Math.random()<0.1?3:2}px;`;
+    end.appendChild(s);
+  }
+  const title = document.createElement('div');
+  title.id = 'ending-title';
+  title.textContent = '\u2714 MISSION COMPLETE';
+  end.appendChild(title);
+  const sub = document.createElement('div');
+  sub.id = 'ending-sub';
+  sub.innerHTML = '\u9003\u751f\u6236\u6162\u6162\u8131\u79bb STATION-7\u7684\u8f68\u9053\u3002<br>\u5ba0\u5927\u7684\u6df1\u7a7a\u5c06\u4f60\u5305\u88f9\u5176\u4e2d\uff0c<br>\u5730\u7403\u7684\u84dd\u5149\u5728\u9065\u8fdc\u7684\u5730\u65b9\u6e10\u6e10\u663e\u73b0\u3002';
+  end.appendChild(sub);
+  const q = document.createElement('div');
+  q.id = 'ending-question';
+  q.textContent = '\u4f60\u9003\u51fa\u4e86 STATION-7\u2026\u2026 \u4f46\u8fd9\u91cc\u7a76\u7adf\u53d1\u751f\u4e86\u4ec0\u4e48\uff1f';
+  end.appendChild(q);
+  const restart = document.createElement('button');
+  restart.id = 'ending-restart';
+  restart.textContent = '[ \u518d\u6b21\u5c1d\u8bd5 — RETRY ]';
+  restart.onclick = restartGame;
+  end.appendChild(restart);
+  end.classList.add('show');
+}
+
+// === 重新开始 ===
+function restartGame() {
+  G.scene = 1;
+  G.inventory = [];
+  G.flags = { panelActivated: false, commPlayed: false, windowViewed: false, doorOpen: false };
+  G.typing = false;
+  G.pwdInput = '';
+  logTime = 0;
+  document.getElementById('sys-log').innerHTML = '';
+  document.getElementById('ending-screen').classList.remove('show');
+  renderInventory();
+  goScene(1, true);
+  sysLog('SYSTEM RESTART — NEW SESSION', 'log-warn');
+}
+
+// === 初始化 ===
+(function init() {
+  renderInventory();
+  goScene(1, true);
+  sysLog('STATION-7 EMERGENCY SYSTEM ONLINE', 'log-warn');
+  sysLog('CREW STATUS: UNKNOWN', 'log-error');
+  sysLog('AWAITING OPERATOR INPUT...', '');
+})();
+</script>
+</body>
+</html>

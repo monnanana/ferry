@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>最后的摆渡人</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#080b12;--bg2:#0d1117;--cyan:#00d4ff;--pink:#ff2d78;--orange:#ff7b00;--green:#00ff88;--text:#c8d6e5;--dim:#5a6f85;--red:#ff3344}
+body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px}
+body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 6px);pointer-events:none;z-index:999}
+.sbar{width:100%;max-width:780px;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:4px 0}
+.st{flex:1;min-width:110px;background:rgba(0,0,0,.3);padding:6px 10px;border:1px solid rgba(0,212,255,.1)}
+.st-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.st-name{font-size:12px;font-weight:bold;color:var(--dim)}
+.st-num{font-size:13px;font-weight:bold}
+.st-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.st-fill{height:100%;border-radius:3px;transition:width .6s}
+.gm{width:100%;max-width:780px;background:var(--bg2);border:1px solid rgba(0,212,255,.15);position:relative;overflow:hidden}
+.sa{width:100%;height:180px;position:relative;overflow:hidden;border-bottom:1px solid rgba(0,212,255,.1);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px}
+.nr{padding:20px 24px;min-height:80px;font-size:14px;line-height:2.0}
+.cb{display:inline-block;width:8px;height:14px;background:var(--cyan);animation:bk .7s infinite;vertical-align:middle;margin-left:2px}
+.ch{padding:12px 24px 20px;display:flex;flex-direction:column;gap:8px}
+.btn{background:transparent;border:1px solid rgba(0,212,255,.3);color:var(--cyan);padding:12px 16px;font-family:inherit;font-size:13px;cursor:pointer;transition:all .2s;text-align:left;line-height:1.7}
+.btn:hover{border-color:var(--cyan);color:#fff;box-shadow:0 0 12px rgba(0,212,255,.35)}
+.btn:disabled{border-color:rgba(90,111,133,.3);color:var(--dim);cursor:not-allowed;box-shadow:none}
+.btn-warn{border-color:rgba(255,51,68,.3);color:var(--red)}
+.btn-warn:hover{border-color:var(--red);box-shadow:0 0 12px rgba(255,51,68,.3)}
+.inv{padding:10px 24px;border-top:1px solid rgba(0,212,255,.08);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.inv-l{font-size:12px;color:var(--dim);letter-spacing:1px;flex-shrink:0}
+.inv-i{font-size:12px;color:var(--cyan);padding:3px 8px;border:1px solid rgba(0,212,255,.25);background:rgba(0,212,255,.04)}
+.clue{padding:8px 24px;border-top:1px solid rgba(0,212,255,.05);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.clue-i{font-size:12px;color:var(--orange);padding:3px 8px;border:1px solid rgba(255,123,0,.25);background:rgba(255,123,0,.04)}
+.msg{padding:8px 24px;font-size:13px;min-height:28px;transition:all .3s}
+.msg-bad{color:var(--red)}.msg-good{color:var(--green)}.msg-info{color:var(--orange)}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 24px}
+@media(max-width:540px){.cgrid{grid-template-columns:1fr}}
+.cc{border:1px solid rgba(0,212,255,.2);padding:14px;cursor:pointer;transition:all .2s;background:rgba(0,0,0,.2)}
+.cc:hover,.cc.sel{border-color:var(--cyan);box-shadow:0 0 15px rgba(0,212,255,.25)}
+.cc.sel{background:rgba(0,212,255,.06)}
+.cc-n{font-size:18px;color:var(--cyan);margin-bottom:2px}
+.cc-r{font-size:12px;color:var(--dim);margin-bottom:8px}
+.cc-d{font-size:13px;line-height:1.7;margin-bottom:10px}
+.cc-a{font-size:13px;color:var(--pink);margin-top:6px}
+.sr{display:flex;align-items:center;gap:8px;margin:3px 0}
+.sr-l{width:48px;font-size:12px;color:var(--dim);flex-shrink:0}
+.sr-b{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.sr-f{height:100%;border-radius:3px}
+.sr-v{width:40px;text-align:right;font-size:12px;color:var(--dim)}
+.sg{padding:12px 24px;display:flex;flex-direction:column;gap:6px}
+.si{border:1px solid rgba(0,212,255,.15);padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.si.got{border-color:var(--green);opacity:.45}
+.si-left{flex:1}.si-nm{font-size:14px;margin-bottom:2px}.si-dc{font-size:12px;color:var(--dim)}
+.si-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.si-pr{font-size:14px;color:var(--orange);font-weight:bold}
+.si-btn{background:transparent;border:1px solid var(--cyan);color:var(--cyan);font-family:inherit;font-size:12px;padding:5px 12px;cursor:pointer}
+.si-btn:hover{background:rgba(0,212,255,.1)}
+.si-btn:disabled{border-color:var(--dim);color:var(--dim);cursor:not-allowed}
+.crow{padding:14px 24px;text-align:center}
+.gbtn{background:transparent;border:1px solid var(--green);color:var(--green);font-family:inherit;font-size:14px;letter-spacing:3px;padding:12px 30px;cursor:pointer;transition:all .2s}
+.gbtn:hover{box-shadow:0 0 20px rgba(0,255,136,.3);background:rgba(0,255,136,.05)}
+.gbtn:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+.end{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;opacity:0;animation:fi 2s .5s forwards;padding:24px;overflow-y:auto}
+.end-t{font-size:12px;color:var(--dim);letter-spacing:5px;margin-bottom:20px}
+.end-h{font-size:24px;color:var(--cyan);text-shadow:0 0 14px var(--cyan);margin-bottom:18px;text-align:center}
+.end-h.bad{color:var(--red);text-shadow:0 0 14px var(--red)}
+.end-p{font-size:14px;line-height:2.1;text-align:center;max-width:540px}
+.end-p .hl{color:var(--cyan);text-shadow:0 0 8px var(--cyan)}
+.end-p .pk{color:var(--pink)}
+.rbtn{margin-top:28px;background:transparent;border:1px solid rgba(0,212,255,.4);color:var(--cyan);font-family:inherit;font-size:13px;letter-spacing:3px;padding:12px 24px;cursor:pointer}
+.rbtn:hover{box-shadow:0 0 15px rgba(0,212,255,.3)}
+.glitch{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:5;background:repeating-linear-gradient(0deg,transparent 0,rgba(255,45,120,.04) 2px,transparent 4px);animation:ga 3s infinite}
+.hidden{display:none!important}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes ga{0%,94%,100%{opacity:0}95%{opacity:1;transform:translateX(-2px)}96%{opacity:.5;transform:translateX(3px)}97%{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="sbar hidden" id="sbar"></div>
+<div class="gm" id="gm"></div>
+<div class="end hidden" id="end"></div>
+<script>
+const G={char:null,inv:[],time:120,hp:100,stress:0,money:300,clues:[],dec:{},bought:{},meds:3,openedBox:false,route:null};
+const $=id=>document.getElementById(id);
+let typing=false,tt=null;
+const CHARS=[
+{id:'zero',name:'零',role:'流浪孤儿',hp:90,stress:10,money:200,gear:['破旧背包','伪装帽','小刀'],desc:'不知道怎么混进停机坪，藏在飞船里很久了。你发现她的时候已经出发了。',ability:'能钻入狭小通道 · NPC不设防 · 易于伪装'},
+{id:'chen',name:'陈叔',role:'老司机·20年灰色航班',hp:60,stress:20,money:350,gear:['老旧导航仪','扳手','人脉通讯器'],desc:'跑了20年灰色航班，欠了一屁股债。这是最后一单。',ability:'机械故障率低 · 黑市有老朋友 · 熟悉捷径'},
+{id:'vera',name:'薇拉',role:'前执法官',hp:75,stress:15,money:280,gear:['停用徽章','手铐','审讯录音笔'],desc:'被系统抛弃的前哨卡官员，靠灰色任务维生。',ability:'检查站免搜 · 审讯获取额外信息'},
+{id:'seven',name:'阿七',role:'黑客·改造人',hp:65,stress:25,money:260,gear:['改造义眼','入侵终端','维持药×3'],desc:'网络渗透专家，身体打了很多改造，药快不够了。',ability:'入侵系统 · 破解门锁 · 提前预警危险'},
+{id:'eun',name:'朴恩',role:'非法医生',hp:70,stress:30,money:300,gear:['医疗箱','镇静剂','伪造医疗证件'],desc:'给地面人看病的非法行医者，欠了保护费。',ability:'急救效果翻倍 · 救重伤NPC解锁隐藏剧情'}
+];
+const SHOP=[
+{id:'fuel',name:'燃料备用罐',price:80,desc:'长途飞行必需，可修引擎故障'},
+{id:'o2',name:'氧气包',price:60,desc:'太空行走必需，碎片带减伤'},
+{id:'bribe',name:'贿赂金',price:100,desc:'过检查站、黑市谈判'},
+{id:'medkit',name:'急救包',price:50,desc:'紧急时刻恢复50体力'},
+{id:'jammer',name:'信号干扰器',price:90,desc:'被追踪时脱身'},
+{id:'food',name:'食物补给',price:20,desc:'长途飞行恢复体力'},
+{id:'papers',name:'伪造货运单',price:70,desc:'检查站通关'}
+];
+
+function has(x){return G.inv.includes(x)}
+function isC(id){return G.char&&G.char.id===id}
+function addClue(c){if(!G.clues.includes(c)){G.clues.push(c);sysMsg('🔍 获得线索：'+c,'msg-info')}}
+function addItem(x){if(!G.inv.includes(x))G.inv.push(x)}
+function rmItem(x){G.inv=G.inv.filter(i=>i!==x)}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+function mod(key,val){
+  const old=G[key];
+  G[key]=clamp(G[key]+val,0,key==='stress'?100:999);
+  renderSbar();
+  const now=G[key];
+  if(key==='hp'){
+    if(val<0)sysMsg('⚠ 体力 '+val+'（剩余'+now+'）','msg-bad');
+    else if(val>0)sysMsg('✓ 体力 +'+val+'（当前'+now+'）','msg-good');
+  }else if(key==='time'){
+    if(val<0)sysMsg('⚠ 时间 '+val+'分钟（剩余'+now+'分钟）','msg-bad');
+  }else if(key==='stress'){
+    if(val>0)sysMsg('⚠ 紧张值 +'+val+'（当前'+now+'）','msg-bad');
+    else if(val<0)sysMsg('✓ 紧张值 '+val+'（当前'+now+'）','msg-good');
+  }
+  if(G.hp<=0)return badEnd('burnout');
+  if(G.time<=0)return badEnd('timeout');
+}
+
+function sysMsg(txt,cls){
+  const m=document.querySelector('.msg');
+  if(m){m.className='msg '+(cls||'msg-info');m.textContent=txt;setTimeout(()=>{if(m.textContent===txt)m.textContent=''},4000)}
+}
+
+function renderSbar(){
+  const sb=$('sbar');if(!sb||sb.classList.contains('hidden'))return;
+  const d=[
+    {n:'时间窗口',v:G.time,mx:120,c:G.time>60?'var(--cyan)':G.time>30?'var(--orange)':'var(--red)',u:'分钟'},
+    {n:'体力',v:G.hp,mx:100,c:G.hp>50?'var(--green)':G.hp>25?'var(--orange)':'var(--red)',u:''},
+    {n:'紧张值',v:G.stress,mx:100,c:G.stress<40?'var(--green)':G.stress<70?'var(--orange)':'var(--red)',u:''},
+    {n:'资源',v:G.money,mx:500,c:'var(--orange)',u:'¥'}
+  ];
+  sb.innerHTML=d.map(s=>`<div class="st"><div class="st-top"><span class="st-name">${s.n}</span><span class="st-num" style="color:${s.c}">${s.u==='¥'?'¥'+s.v:s.v+(s.u?' '+s.u:'')}</span></div><div class="st-bar"><div class="st-fill" style="width:${Math.min(100,(s.v/s.mx)*100)}%;background:${s.c}"></div></div></div>`).join('');
+}
+
+function typeT(el,text,cb){
+  if(typing&&tt)clearTimeout(tt);
+  typing=true;el.innerHTML='';
+  let i=0;const cur=document.createElement('span');cur.className='cb';
+  function nx(){
+    if(i<text.length){
+      if(text[i]==='\n')el.appendChild(document.createElement('br'));
+      else{const s=document.createElement('span');s.textContent=text[i];el.appendChild(s)}
+      i++;el.appendChild(cur);tt=setTimeout(nx,i<40?28:14);
+    }else{cur.remove();typing=false;if(cb)setTimeout(cb,300)}
+  }
+  nx();
+}
+
+function rInv(){
+  const items=G.inv.map(x=>`<span class="inv-i">${x}</span>`).join('');
+  return `<div class="inv"><span class="inv-l">装备：</span>${items||'<span style="font-size:12px;color:var(--dim)">无</span>'}</div>`;
+}
+function rClue(){
+  if(!G.clues.length)return '';
+  return `<div class="clue"><span class="inv-l">线索：</span>${G.clues.map(x=>`<span class="clue-i">${x}</span>`).join('')}</div>`;
+}
+
+function checkMeds(){
+  if(!isC('seven'))return;
+  G.meds--;
+  if(G.meds<=0){
+    sysMsg('⚠ 维持药耗尽！改造体开始排异反应','msg-bad');
+    mod('hp',-10);
+  }
+}
+
+// === Bad Endings ===
+const BAD={
+sell:{
+zero:'零拿到钱去了星港，买了一张到远星区的票。候机厅屏幕上滚动着新闻——「基因清除计划正式启动」。她想起装箱那天那个哭泣的女人。她低头看着手里的票，不知道要去哪了。',
+chen:'债清了。陈叔回到地面的公寓，打开灯，冰箱是空的。他给前妻发了一条消息："还完了。"没有回复。他关掉通讯器坐在黑暗里。20年灰色航班，最后一单，他终于学会了不问箱子里是什么。',
+vera:'薇拉在酒吧喝了一夜。第二天看到新闻，认出了买家——轨道城情报部的人。她不是把箱子卖掉了。她是把箱子还给了他们。前执法官，最终帮了体制一次忙。',
+seven:'阿七用那笔钱买了一年的维持药。改造体不再排异，视觉清晰。但他黑进了买家的系统想看箱子去向——查到的加密文件名是一个日期。婴儿的出生日。',
+eun:'朴恩还清了保护费。三个月后一个女人走进诊所，说女儿失踪了。朴恩看了照片——她突然明白了箱子上那个编号是什么意思。但她什么也没说。'
+},
+silence:{
+zero:'零被关在少年拘留区。没有人来认领她。第七天，一个穿白大褂的人来问："你知不知道那个箱子里是什么？"零说不知道。那个人笑了，走了。零再也没有从那个房间出去。',
+chen:'拘留72小时后放人。灰色航班执照被吊销。债没还上，债主找上门。他站在停机坪看着穿梭机被拖走。20年了。他和那艘船一样，不能再飞了。',
+vera:'前同事来看她。"箱子呢？""已处理。"薇拉知道「已处理」在执法系统里是什么意思——她曾经签过那种文件。',
+seven:'被没收了义眼和终端。没有义眼他看不清。没有药改造体排异。手抖个不停。屏幕上最后一行通知：「货物已移交基因安全局」。',
+eun:'执法官发现了她的伪造医疗证件。诊所被查封了。地面上那些等她看病的人不会再等到她了。隔着拘留舱的窗户，她听到了一声很短的哭声。'
+},
+burnout:{
+zero:'零靠在驾驶座上，身体已经不听使唤了。她用最后的力气伸手碰了一下箱子——箱子是温的。她知道了。然后她闭上了眼睛。',
+chen:'陈叔感觉到心脏跳动越来越慢。老毛病了。他看了一眼导航屏——距离轨道城还有14公里。开了20年，差最后14公里。',
+vera:'薇拉握着那枚停用的徽章。金属很冷。"我曾经是保护人的人。"引擎的声音像催眠曲。她最后的念头是：这枚徽章应该交给谁。',
+seven:'维持药用完了。视觉彻底崩溃——眼前全是雪花和乱码。"如果不改造，我可能还是个好人。"他在乱码中打下最后一行代码：DELETE ALL。',
+eun:'朴恩听到了箱子里微弱的声音。作为医生她立刻知道了——那是新生儿的呼吸，频率偏快，体温可能在下降。她必须打开箱子——但她的手已经抬不起来了。'
+},
+timeout:{
+zero:'零盯着轨道城的灯光。那么亮，那么远。她在飞船里又变回了那个藏在角落的小女孩。"我以为这次不一样。"',
+chen:'陈叔关掉引擎，让穿梭机进入自由漂流。他点了根烟。"老婆，我还是没跑完最后一单。"烟的火星在黑暗中一明一灭。',
+vera:'薇拉联系GATE-7请求延时。回复是前同事的声音："窗口已关闭。请返回。"她没有回话。',
+seven:'阿七在窗口关闭的瞬间截获了一段加密通讯："目标未按时到达。启动B方案。"他不知道B方案是什么。但他知道，有什么人失望了。',
+eun:'舱内温度开始下降。朴恩把自己的外套脱下来盖在箱子上。"至少……保暖。"她不知道这有没有用。但她只会做这一件事。'
+},
+betray:{
+zero:'零看着追踪者把婴儿带走。她没哭。她已经很久没有哭过了。但从那天起，她再也无法藏在别人的飞船里了。因为每一个角落都会想起那双眼睛。',
+chen:'"我这辈子运过人、运过枪、运过数据。但我从没运过一个活着的孩子。第一次运，就是最后一次。"陈叔拿着钱走出港口。他没有回头。他不敢。',
+vera:'"保证她的安全。"追踪者说："当然。"薇拉知道这是谎言——因为她自己当执法官的时候也这么说过。',
+seven:'阿七的改造义眼自动录下了全过程。他把录像加密存了三份。他不知道这有什么用。但代码不会忘记。',
+eun:'朴恩检查过婴儿的状态后把她交出去了。婴儿很健康。她甚至做了一份基因报告。"我是医生。我只负责健康。"她在黑暗的飞船里把基因报告的副本看了一整夜。'
+}};
+
+function badEnd(type){
+  const txt=BAD[type]?BAD[type][G.char.id]:'任务失败了。';
+  const titles={sell:'选择',silence:'沉默',burnout:'燃尽',timeout:'超时',betray:'背叛'};
+  const e=$('end');e.classList.remove('hidden');
+  e.innerHTML=`<div class="end-t">MISSION FAILED</div><div class="end-h bad">「${titles[type]||type}」</div><div class="end-p">${txt}</div><button class="rbtn" onclick="location.reload()">重新开始</button>`;
+}
+
+function goodEnd(title,txt){
+  const e=$('end');e.classList.remove('hidden');
+  e.innerHTML=`<div class="end-t">MISSION COMPLETE</div><div class="end-h">「${title}」</div><div class="end-p">${txt}</div><button class="rbtn" onclick="location.reload()">重新开始</button>`;
+}
+
+// === 场景0: 标题 ===
+function s0(){
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at bottom,#0a1628,#050508)"><div style="font-size:28px;color:var(--cyan);text-shadow:0 0 20px var(--cyan);letter-spacing:6px">最后的摆渡人</div><div style="font-size:12px;color:var(--dim);letter-spacing:4px;margin-top:4px">THE LAST FERRYMAN</div></div><div class="nr" id="n0"></div><div class="ch"><button class="btn" onclick="s1()">开始任务</button></div>`;
+  typeT($('n0'),'轨道城市时代。有钱人住在天上，地面人仰望星空。\n\n你是一个穿梭机驾驶员，专跑不上报的灰色航班。\n\n今晚，有人给了你一个密封箱，说：\n「送到轨道城7号舱，你欠的债就清了。」\n\n你没问里面是什么。规矩就是这样。');
+}
+
+// === 场景1: 角色选择 ===
+function s1(){
+  let sel=null;
+  function r(){
+    $('gm').innerHTML=`<div style="padding:14px 24px;font-size:16px;color:var(--cyan);letter-spacing:2px">选择角色</div><div class="cgrid">${CHARS.map((c,i)=>`<div class="cc ${sel===i?'sel':''}" onclick="window._sc(${i})"><div class="cc-n">${c.name}</div><div class="cc-r">${c.role}</div><div class="cc-d">${c.desc}</div><div class="sr"><span class="sr-l">体力</span><div class="sr-b"><div class="sr-f" style="width:${c.hp}%;background:var(--green)"></div></div><span class="sr-v">${c.hp}</span></div><div class="sr"><span class="sr-l">抗压</span><div class="sr-b"><div class="sr-f" style="width:${100-c.stress}%;background:var(--cyan)"></div></div><span class="sr-v">${100-c.stress}</span></div><div class="sr"><span class="sr-l">资金</span><div class="sr-b"><div class="sr-f" style="width:${c.money/4}%;background:var(--orange)"></div></div><span class="sr-v">¥${c.money}</span></div><div style="font-size:12px;color:var(--dim);margin-top:8px">装备：${c.gear.join(' / ')}</div><div class="cc-a">◆ ${c.ability}</div></div>`).join('')}</div><div class="crow"><button class="gbtn" ${sel===null?'disabled':''} onclick="window._cc()">确认选择</button></div>`;
+  }
+  window._sc=i=>{sel=i;r()};
+  window._cc=()=>{if(sel===null)return;G.char=CHARS[sel];G.hp=G.char.hp;G.stress=G.char.stress;G.money=G.char.money;G.inv=[...G.char.gear];s2()};
+  r();
+}
+
+// === 场景2: 补给站 ===
+function s2(){
+  $('sbar').classList.remove('hidden');renderSbar();
+  function r(){
+    $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at center,#0f1520,#080b12)"><div style="font-size:18px;color:var(--cyan);letter-spacing:3px">补给站</div><div style="font-size:14px;color:var(--orange);margin-top:4px">预算：¥${G.money}</div></div><div style="padding:10px 24px;font-size:13px;color:var(--dim)">当前装备：${G.inv.join(' / ')}</div><div class="sg">${SHOP.map(it=>{const got=G.bought[it.id];const ok=!got&&G.money>=it.price;return `<div class="si ${got?'got':''}"><div class="si-left"><div class="si-nm">${it.name}</div><div class="si-dc">${it.desc}</div></div><div class="si-right"><span class="si-pr">¥${it.price}</span>${got?'<span style="font-size:13px;color:var(--green)">✓ 已购</span>':`<button class="si-btn" ${ok?'':'disabled'} onclick="window._buy('${it.id}')">购买</button>`}</div></div>`}).join('')}</div>${rInv()}<div class="crow"><button class="gbtn" onclick="s3()">出发</button></div>`;
+  }
+  window._buy=id=>{const it=SHOP.find(x=>x.id===id);if(!it||G.bought[id]||G.money<it.price)return;G.money-=it.price;G.bought[id]=true;addItem(it.name);renderSbar();r()};
+  r();
+}
+
+// === 场景3: 航线选择 ===
+function s3(){
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at top,#0a1628,#050508)"><div style="width:70px;height:25px;border:2px solid var(--cyan);border-radius:4px 12px 12px 4px;position:relative;box-shadow:0 0 12px rgba(0,212,255,.3)"><div style="position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:9px solid var(--cyan)"></div></div></div><div class="nr" id="n3"></div><div class="msg"></div><div class="ch" id="c3"></div>${rInv()}${rClue()}`;
+  typeT($('n3'),'引擎启动，穿梭机脱离停机坪。城市灯光在脚下缩小，大气层边缘泛着橘红色。\n\n密封箱安静地固定在副驾后方——没有标签，没有编号，只有一道冷焊封口。\n\n导航屏上显示两条可用航线。你必须选一条。',()=>{
+    let ch=`<button class="btn" onclick="window._route('fast')">快速航道 —— 时间消耗少，但要穿过碎片带</button><button class="btn" onclick="window._route('slow')">偏僻航路 —— 更安全，但时间消耗多，经过流亡者聚集地</button>`;
+    if(isC('chen'))ch+=`<button class="btn" onclick="window._route('mil')">旧军用航道 —— 最快，但可能遇到废弃无人机（你开了20年，知道这条路）</button>`;
+    $('c3').innerHTML=ch;
+  });
+  window._route=r=>{G.route=r;mod('time',r==='fast'?-15:r==='slow'?-30:-10);s4()};
+}
+
+// === 场景4: 强制消耗 - 饥饿检查 ===
+function s4(){
+  const hasFood=has('食物补给');
+  $('gm').innerHTML=`<div class="sa" style="background:#0a0e18"><div style="color:var(--dim);font-size:13px;letter-spacing:2px">飞行中 ...</div></div><div class="nr" id="n4"></div><div class="msg"></div><div class="ch" id="c4"></div>${rInv()}${rClue()}`;
+  if(hasFood){
+    typeT($('n4'),'飞了半小时，肚子开始叫了。你从背包里拿出食物补给，边飞边吃。\n\n简单但管用。体力恢复了一些。',()=>{
+      rmItem('食物补给');mod('hp',20);
+      sysMsg('[ 食物补给已消耗，体力+20 ]','msg-good');
+      $('c4').innerHTML=`<button class="btn" onclick="s5()">继续飞行</button>`;
+    });
+  }else{
+    typeT($('n4'),'飞了半小时，肚子开始叫了。你翻遍了驾驶舱——没有任何吃的。\n\n饥饿感让你的注意力开始下降，手脚发软。',()=>{
+      mod('hp',-15);
+      $('c4').innerHTML=`<button class="btn" onclick="s5()">忍着，继续飞行</button>`;
+    });
+  }
+}
+
+// === 场景5: 碎片带/流亡者/军用航道 ===
+function s5(){
+  if(G.route==='fast')s5_debris();
+  else if(G.route==='slow')s5_ref();
+  else s5_mil();
+}
+function s5_debris(){
+  const hasO2=has('氧气包');
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at center,#0a0f1a,#050508)"><div style="color:var(--red);font-size:14px;letter-spacing:2px;animation:bk 1s infinite">⚠ 碎片带警告</div></div><div class="nr" id="n5"></div><div class="msg"></div><div class="ch" id="c5"></div>${rInv()}${rClue()}`;
+  typeT($('n5'),'穿梭机进入碎片带区域。无数细小的金属碎片在黑暗中高速飞行。\n\n一声闷响——碎片撞击了舱体！警报响起，气压开始下降！',()=>{
+    if(isC('seven')){
+      $('c5').innerHTML=`<button class="btn" onclick="s5d_scan()">改造义眼提前预警，规避大部分碎片</button>`;
+    }else if(isC('chen')){
+      $('c5').innerHTML=`<button class="btn" onclick="s5d_fix()">用扳手快速修复漏气点（干了20年了）</button>${hasO2?`<button class="btn" onclick="s5d_o2()">用氧气包修补漏气</button>`:''}`;
+    }else{
+      let ch=hasO2?`<button class="btn" onclick="s5d_o2()">用氧气包修补漏气</button>`:'';
+      ch+=`<button class="btn btn-warn" onclick="s5d_none()">⚠ 硬扛过去</button>`;
+      $('c5').innerHTML=ch;
+    }
+  });
+}
+function s5d_scan(){mod('hp',-5);sysMsg('义眼预警规避了大部分碎片，只受了轻伤','msg-good');afterDebris()}
+function s5d_fix(){sysMsg('扳手修复漏气点，毫发无伤','msg-good');afterDebris()}
+function s5d_o2(){rmItem('氧气包');mod('hp',-5);sysMsg('[ 氧气包已消耗 ] 修补了漏气，轻微受伤','msg-info');afterDebris()}
+function s5d_none(){mod('hp',-25);mod('stress',15);afterDebris()}
+function afterDebris(){
+  setTimeout(()=>{
+    $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--green);font-size:13px">已离开碎片带</div></div><div class="nr" id="nad"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s6()">继续飞行</button></div>${rInv()}${rClue()}`;
+    typeT($('nad'),'穿梭机摇摇晃晃地驶出碎片带。你检查了一下舱体——还能撑住。\n\n前方航路暂时平静了。');
+  },1500);
+}
+
+function s5_ref(){
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at bottom,#0f0a15,#050508)"><div style="color:var(--cyan);font-size:14px;letter-spacing:2px">流亡者聚集地</div></div><div class="nr" id="n5r"></div><div class="msg"></div><div class="ch" id="c5r"></div>${rInv()}${rClue()}`;
+  typeT($('n5r'),'偏僻航路上漂浮着一片由废弃舱体焊接而成的聚落——被轨道城驱逐的人住在这里。\n\n有人在公共频道招呼你靠泊交易。',()=>{
+    let ch=`<button class="btn" onclick="s5r_ignore()">忽略，继续飞行</button>`;
+    if(has('食物补给'))ch+=`<button class="btn" onclick="s5r_trade()">用食物补给和他们交换情报</button>`;
+    if(isC('eun'))ch+=`<button class="btn" onclick="s5r_heal()">给生病的孩子看病（你是医生，这是你会做的事）</button>`;
+    if(isC('zero'))ch+=`<button class="btn" onclick="s5r_kids()">和聚落的孩子们一起探索（他们不怕你）</button>`;
+    $('c5r').innerHTML=ch;
+  });
+}
+function s5r_ignore(){mod('time',-5);afterRef()}
+function s5r_trade(){rmItem('食物补给');addClue('箱子被轨道城高层追踪');G.dec.helped_refugees=true;afterRef()}
+function s5r_heal(){G.dec.helped_refugees=true;G.dec.eun_gene_discovery=true;addClue('流亡者孩子有相同基因异常');addClue('基因清除计划已在秘密执行');mod('hp',10);afterRef()}
+function s5r_kids(){G.dec.helped_refugees=true;addClue('隐藏航路可绕过GATE-7');mod('time',10);afterRef()}
+function afterRef(){
+  setTimeout(()=>{
+    $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--cyan);font-size:13px">离开聚集地</div></div><div class="nr" id="nar"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s6()">继续飞行</button></div>${rInv()}${rClue()}`;
+    typeT($('nar'),'穿梭机重新进入航道。那些漂浮的舱体在后视屏中越来越小。\n\n那些被遗弃的人，和你运的这个箱子，也许有某种关联。');
+  },1200);
+}
+
+function s5_mil(){
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at center,#0f1015,#050508)"><div style="color:var(--orange);font-size:14px;letter-spacing:2px">旧军用航道</div></div><div class="nr" id="n5m"></div><div class="msg"></div><div class="ch" id="c5m"></div>${rInv()}${rClue()}`;
+  typeT($('n5m'),'旧军用航道已经废弃十几年了。两侧漂浮着退役的军事设施。\n\n突然，一架废弃无人机的扫描灯亮了——它还在运行！',()=>{
+    $('c5m').innerHTML=`<button class="btn" onclick="s5m_exp()">凭经验规避扫描波束（你认识这型号）</button>`;
+  });
+  window.s5m_exp=()=>{
+    addClue('旧航道有未公开的军事设施');
+    $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--green);font-size:13px">安全通过</div></div><div class="nr" id="nam"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s6()">继续飞行</button></div>${rInv()}${rClue()}`;
+    typeT($('nam'),'你调整了穿梭机的角度，刚好避开了扫描波束的死角。干了20年不是白干的。\n\n不过你注意到，这条废弃航道上的设施比你记忆中多了一些。有人在秘密使用这里。');
+  };
+}
+
+// === 场景6: 引擎故障 ===
+function s6(){
+  mod('time',-5);
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at bottom,#1a0a05,#050508)"><div style="color:var(--red);font-size:14px;animation:bk 1.5s infinite">⚠ 引擎故障</div></div><div class="nr" id="n6"></div><div class="msg"></div><div class="ch" id="c6"></div>${rInv()}${rClue()}`;
+  typeT($('n6'),'引擎发出异响，燃料压力灯变红。穿梭机开始颤抖——如果不处理，你会失去动力。',()=>{
+    let ch='';
+    if(isC('chen'))ch+=`<button class="btn" onclick="s6_chen()">用扳手手动修复（你干了20年了）</button>`;
+    if(isC('seven'))ch+=`<button class="btn" onclick="s6_seven()">用改造义眼检查引擎——是不是被人动了手脚？</button>`;
+    if(has('燃料备用罐'))ch+=`<button class="btn" onclick="s6_fuel()">切换备用燃料系统</button>`;
+    ch+=`<button class="btn btn-warn" onclick="s6_none()">⚠ 紧急降速滑行</button>`;
+    $('c6').innerHTML=ch;
+  });
+}
+function s6_chen(){mod('time',-5);sysMsg('扳手+20年经验=完美修复','msg-good');s7()}
+function s6_seven(){addClue('引擎被人为破坏——有人不想让你到达');mod('time',-8);sysMsg('发现破坏痕迹上有特定代码签名','msg-info');s7()}
+function s6_fuel(){rmItem('燃料备用罐');sysMsg('[ 燃料备用罐已消耗 ] 切换成功','msg-info');s7()}
+function s6_none(){mod('time',-15);mod('hp',-10);s7()}
+
+// === 场景7: L-9 空间站 ===
+function s7(){
+  checkMeds();
+  mod('time',-8);
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at center,#0a0f1a,#050508)"><div style="width:90px;height:50px;border:2px solid rgba(0,212,255,.2);border-radius:4px;position:relative;opacity:.6;transform:rotate(3deg)"><div style="position:absolute;top:8px;left:8px;width:5px;height:5px;border-radius:50%;background:var(--orange);box-shadow:0 0 6px var(--orange);animation:bk 1.5s infinite"></div></div></div><div class="nr" id="n7"></div><div class="msg"></div><div class="ch" id="c7"></div>${rInv()}${rClue()}`;
+  typeT($('n7'),'广播频道突然响起微弱信号——\n\n"……请求……支援……氧气……还剩……"\n\n废弃空间站L-9的灯光几乎全灭了，只有一个舱段还亮着应急灯。',()=>{
+    let ch=`<button class="btn btn-warn" onclick="s7_skip()">⚠ 忽略信号，继续飞行</button><button class="btn" onclick="s7_dock()">靠泊空间站，调查求救信号</button>`;
+    if(isC('seven'))ch+=`<button class="btn" onclick="s7_scan()">用改造义眼远程扫描空间站</button>`;
+    $('c7').innerHTML=ch;
+  });
+}
+function s7_skip(){G.dec.l9='skip';mod('stress',10);
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--dim);font-size:13px;letter-spacing:3px">...SIGNAL LOST...</div></div><div class="nr" id="ns"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s8()">继续飞行</button></div>${rInv()}${rClue()}`;
+  typeT($('ns'),'你关掉了广播。穿梭机加速驶离，L-9在后视屏中变成一个暗点。\n\n那个求救的声音在驾驶舱里回荡了很久。你告诉自己这是正确的选择。');
+}
+function s7_scan(){G.dec.l9='scan';mod('time',-5);addClue('L-9站内有一个生命体征');
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--green);font-size:12px;letter-spacing:2px">BIOSCAN: 1 LIFE SIGN DETECTED</div></div><div class="nr" id="ns2"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s7_dock()">靠泊进去看看</button><button class="btn btn-warn" onclick="s7_skip()">⚠ 确认忽略</button></div>${rInv()}${rClue()}`;
+  typeT($('ns2'),'义眼热成像：B3舱段，一个微弱热源。人形。还活着。\n\n扫描同时捕捉到数据碎片——有人在终端上查询过"密封箱运输协议"。');
+}
+function s7_dock(){G.dec.l9='dock';mod('time',-12);mod('hp',has('氧气包')?-5:-15);
+  if(has('氧气包')){rmItem('氧气包');sysMsg('[ 氧气包已消耗 ] 进站损伤减少','msg-info')}
+  const canSave=has('急救包')||isC('eun');
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at bottom,#0f0a05,#050508)"><div style="color:var(--orange);font-size:13px;animation:bk 2s infinite">⚠ 应急照明</div></div><div class="nr" id="nd"></div><div class="msg"></div><div class="ch" id="cd"></div>${rInv()}${rClue()}`;
+  typeT($('nd'),'你漂进L-9。空间站内一片狼藉。\n\n一个中年男人蜷缩在角落，胸口烧伤，呼吸微弱。\n\n"你是……摆渡人？那个箱子……我知道一些事……"',()=>{
+    let ch='';
+    if(canSave)ch+=`<button class="btn" onclick="s7_save()">${isC('eun')?'用医疗箱救治他（你是医生）':'用急救包救治他'}</button>`;
+    else ch+=`<button class="btn" disabled>救治他（需要急救包——你没有）</button>`;
+    if(isC('zero'))ch+=`<button class="btn" onclick="s7_vent()">钻进通风管道，看看隐藏区域有什么</button>`;
+    ch+=`<button class="btn" onclick="s7_ask()">先问清楚他知道什么</button>`;
+    ch+=`<button class="btn btn-warn" onclick="s7_leave()">⚠ 时间不够了，直接离开</button>`;
+    $('cd').innerHTML=ch;
+  });
+}
+function s7_save(){G.dec.l9_save=true;if(isC('eun'))mod('hp',10);else rmItem('急救包');addClue('箱子里有活的东西');addClue('委托人是轨道城内部的人');
+  $('gm').innerHTML=`<div class="sa" style="background:#0a0f1a"><div style="color:var(--green);font-size:13px">伤者状态稳定</div></div><div class="nr" id="nv"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s8()">离开L-9，继续航行</button></div>${rInv()}${rClue()}`;
+  typeT($('nv'),'你处理了他的伤口。呼吸逐渐平稳。\n\n"谢谢……那个箱子不是普通货物。里面有活的东西，我听到了声音。"\n\n"委托人不是地面人，是轨道城内部的。他们在偷偷往外面转移什么。"\n\n他把一个数据芯片塞进你手里。\n"小心GATE-7。他们在找这个箱子。"');
+}
+function s7_vent(){addClue('L-9隐藏区域有运输记录');
+  $('gm').innerHTML=`<div class="sa" style="background:#0a0f1a"><div style="color:var(--cyan);font-size:13px">发现隐藏区域</div></div><div class="nr" id="nv2"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s7_ask()">回去问伤者情况</button></div>${rInv()}${rClue()}`;
+  typeT($('nv2'),'通风管很窄，但你钻得进去。\n\n在一个隐藏的储物间里，你发现了一堆运输记录——和你的箱子一样的编号，一共运了七次。你是第八个。\n\n前面七次，有三次"送达"，四次标记为"拦截"。');
+}
+function s7_ask(){addClue('箱子里有活的东西');
+  $('gm').innerHTML=`<div class="sa" style="background:#0a0f1a"><div style="color:var(--dim);font-size:12px">RECORDING...</div></div><div class="nr" id="na2"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s8()">离开L-9</button></div>${rInv()}${rClue()}`;
+  typeT($('na2'),'他的声音越来越弱。\n\n"箱子……里面有活的东西……我听到过……"\n\n他没能说完。意识模糊了。你不确定他还能撑多久。');
+}
+function s7_leave(){mod('stress',15);
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--red);font-size:12px">UNDOCKING...</div></div><div class="nr" id="nl"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s8()">继续飞行</button></div>${rInv()}${rClue()}`;
+  typeT($('nl'),'你回头看了他一眼。他的嘴唇在动，但你已经听不到了。\n\n对接口关闭。引擎重新点火。你的手有点抖。');
+}
+
+// === 场景8: 强制消耗 - 燃料检查 ===
+function s8(){
+  const hasFuel=has('燃料备用罐');
+  $('gm').innerHTML=`<div class="sa" style="background:#0a0e18"><div style="color:var(--orange);font-size:13px">长途飞行中...</div></div><div class="nr" id="n8"></div><div class="msg"></div><div class="ch" id="c8"></div>${rInv()}${rClue()}`;
+  if(hasFuel){
+    typeT($('n8'),'连续飞行让引擎温度过高，燃料消耗加快。\n\n幸好你买了备用燃料——切换备用系统后，引擎温度回落，一切恢复正常。',()=>{
+      rmItem('燃料备用罐');sysMsg('[ 燃料备用罐已消耗 ] 引擎恢复正常','msg-info');
+      $('c8').innerHTML=`<button class="btn" onclick="s9()">继续飞行</button>`;
+    });
+  }else if(isC('chen')){
+    typeT($('n8'),'引擎温度过高。你凭经验调整了燃料混合比——没有备用罐，但老司机有老司机的办法。\n\n温度降了下来，不过耽误了一些时间。',()=>{
+      mod('time',-8);
+      $('c8').innerHTML=`<button class="btn" onclick="s9()">继续飞行</button>`;
+    });
+  }else{
+    typeT($('n8'),'连续飞行让引擎温度过高，燃料消耗加快。你没有备用燃料。\n\n被迫紧急降速，等待引擎自然冷却。这浪费了大量时间。',()=>{
+      mod('time',-20);
+      $('c8').innerHTML=`<button class="btn" onclick="s9()">继续飞行</button>`;
+    });
+  }
+}
+
+// === 场景9: 箱子发出声音 ===
+function s9(){
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"></div><div class="nr" id="n9"></div><div class="msg"></div><div class="ch" id="c9"></div>${rInv()}${rClue()}`;
+  typeT($('n9'),'驾驶舱很安静。只有引擎的低频嗡鸣。\n\n然后你听到了——从副驾后方的箱子里——一声极其微弱的……呼吸。\n\n不是机械声。不是管道声。是活的东西在呼吸。',()=>{
+    let ch=`<button class="btn" onclick="s9_listen()">贴耳过去仔细听</button><button class="btn" onclick="s9_touch()">用手摸箱子外壁</button><button class="btn" onclick="s9_ignore()">假装没听到，继续开</button>`;
+    if(isC('seven'))ch+=`<button class="btn" onclick="s9_scan()">用改造义眼扫描箱子内部</button>`;
+    if(isC('eun'))ch+=`<button class="btn" onclick="s9_heartbeat()">安静下来，用医生的耳朵判断</button>`;
+    $('c9').innerHTML=ch;
+  });
+}
+function s9_listen(){mod('stress',10);s9_step2('你把耳朵贴在箱子上。\n\n呼吸声。很微弱，很规律。还有……极其轻微的体温，透过金属传过来。\n\n箱子里有活物。而且很小。')}
+function s9_touch(){mod('stress',8);s9_step2('你把手掌放在箱子外壁。\n\n金属是温的。不是引擎余热——是体温。有什么东西在里面，活着的，温暖的。')}
+function s9_ignore(){mod('stress',15);
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"></div><div class="nr" id="ni"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s10()">继续飞行</button></div>${rInv()}${rClue()}`;
+  typeT($('ni'),'你把视线移回前方。手指握紧了操纵杆。\n\n你没听到。什么都没听到。规矩就是这样：别问，别打开。\n\n但你的心跳比刚才快了。');
+}
+function s9_scan(){mod('stress',5);addClue('箱子内部有小型热源');
+  s9_step2('改造义眼切换到透视模式。\n\n箱子内部结构逐渐清晰——保温层、生命维持系统、还有……一个很小的热源轮廓。\n\n体型很小。很小很小。像是……')}
+function s9_heartbeat(){addClue('箱子里是新生儿');G.dec.eun_heard=true;
+  s9_step2('你闭上眼睛，让驾驶舱安静到极致。\n\n你听到了。那不只是呼吸——是心跳。频率偏快，大约每分钟140次。\n\n作为医生你立刻知道了：这是新生儿的心跳。\n\n箱子里是一个婴儿。')}
+function s9_step2(txt){
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"></div><div class="nr" id="n92"></div><div class="msg"></div><div class="ch" id="c92"></div>${rInv()}${rClue()}`;
+  typeT($('n92'),txt,()=>{
+    let ch=`<button class="btn" onclick="s9_open()">打开箱子</button><button class="btn" onclick="s9_close()">不打开。记住这个声音，继续走。</button>`;
+    $('c92').innerHTML=ch;
+  });
+}
+function s9_open(){
+  G.openedBox=true;mod('stress',20);
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at center,#1a1520,#050508)"></div><div class="nr" id="no"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s10()">合上箱子，继续飞行</button></div>${rInv()}${rClue()}`;
+  typeT($('no'),'你的手在抖。冷焊封口被你一点一点撬开。\n\n箱子打开了。\n\n里面是一个婴儿。\n\n很小，裹在保温材料里，皮肤微微泛红。她睁开了眼睛——漆黑的、湿润的眼睛，直直地看着你。\n\n你运的不是数据，不是武器，不是毒品。\n你运的是一个活着的人。\n\n她打了一个小小的哈欠，又闭上了眼睛。');
+}
+function s9_close(){
+  $('gm').innerHTML=`<div class="sa" style="background:#050508"></div><div class="nr" id="nc"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s10()">继续飞行</button></div>${rInv()}${rClue()}`;
+  typeT($('nc'),'你缩回了手。\n\n不打开。不知道里面是什么，就不需要做任何选择。\n\n你只是一个摆渡人。送到就行。\n\n但那个声音，你这辈子不会忘了。');
+}
+
+// === 场景10: 铁锈湾 ===
+function s10(){
+  checkMeds();mod('time',-10);
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at bottom,#1a0a15,#080508)">${['铁','锈','湾'].map((c,i)=>`<span style="color:${i%2?'var(--pink)':'var(--orange)'};font-size:${20+i*4}px;text-shadow:0 0 10px ${i%2?'var(--pink)':'var(--orange)'};margin:0 4px">${c}</span>`).join('')}</div><div class="nr" id="n10"></div><div class="msg"></div><div class="ch" id="c10"></div>${rInv()}${rClue()}`;
+  typeT($('n10'),'铁锈湾——轨道上最大的黑市补给港。\n\n你刚停好船，需要决定在这里做什么。',()=>{
+    let ch='';
+    if(G.hp<70)ch+=`<button class="btn" onclick="s10_clinic()">去黑市诊所${isC('eun')?'（你在这里有熟人）':'（花¥80恢复30体力）'}</button>`;
+    ch+=`<button class="btn" onclick="s10_info()">去找信息贩子${isC('seven')?'（你能直接黑进他的系统）':'（花¥60买线索）'}</button>`;
+    ch+=`<button class="btn" onclick="s10_trade()">直接去交易区</button>`;
+    $('c10').innerHTML=ch;
+  });
+}
+function s10_clinic(){
+  if(isC('eun')){mod('hp',30);addClue('基因清除计划已在秘密执行');
+    s10_after('诊所老板是你的前导师。他免费给你治了伤，还告诉了你一些关于「基因清除计划」的事。\n\n"那些箱子里的孩子，都是被清除名单上的。有人在往外面偷运他们。"')
+  }else if(G.money>=80){G.money-=80;mod('hp',30);renderSbar();
+    s10_after('花了¥80在黑市诊所恢复了体力。\n\n诊所老板多看了你一眼："最近好多人来找一个箱子。你也是？"')
+  }else{sysMsg('钱不够！','msg-bad');s10()}
+}
+function s10_info(){
+  if(isC('seven')){addClue('GATE-7今晚换了新扫描协议');addClue('追踪者来自轨道城情报部');
+    s10_after('你黑进了信息贩子的系统。他发现了——但他没有报警。他是你的前师父。\n\n"还在用那套老代码？""是你教我的。"\n\n他给了你两条关键情报，还塞给你一剂维持药。');
+    if(isC('seven'))G.meds++;
+  }else if(G.money>=60){G.money-=60;addClue('GATE-7今晚换了新扫描协议');renderSbar();
+    s10_after('信息贩子拿了你的钱，给了你一条情报：\n\n"GATE-7今晚换了新的扫描协议。常规的躲法不管用了。"')
+  }else{sysMsg('钱不够！','msg-bad');s10()}
+}
+function s10_after(txt){
+  $('gm').innerHTML=`<div class="sa" style="background:#1a0a15"></div><div class="nr" id="na10"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s10_trade()">去交易区</button></div>${rInv()}${rClue()}`;
+  typeT($('na10'),txt);
+}
+function s10_trade(){
+  $('gm').innerHTML=`<div class="sa" style="background:#1a0a15"><div style="color:var(--orange);font-size:14px">交易区</div></div><div class="nr" id="nt"></div><div class="msg"></div><div class="ch" id="ct"></div>${rInv()}${rClue()}`;
+  typeT($('nt'),'一个穿银色大衣的男人靠过来，看了一眼你的货舱，笑了。\n\n"那个箱子。¥50000，现金。怎么样？"\n\n五万。足够还清所有的债，还能剩下不少。',()=>{
+    let ch=`<button class="btn btn-warn" onclick="badEnd('sell')">⚠ 卖掉箱子，拿钱走人</button><button class="btn" onclick="s10_refuse()">拒绝，离开铁锈湾</button>`;
+    if(has('贿赂金')||isC('vera'))ch+=`<button class="btn" onclick="s10_negotiate()">${isC('vera')?'用审讯话术套他的底细':'假装感兴趣，套话'}</button>`;
+    if(isC('chen'))ch+=`<button class="btn" onclick="s10_friend()">联系老朋友打听这个人</button>`;
+    $('ct').innerHTML=ch;
+  });
+}
+function s10_refuse(){G.dec.rust='refuse';mod('stress',10);s11()}
+function s10_negotiate(){G.dec.rust='negotiate';if(has('贿赂金'))rmItem('贿赂金');addClue('买家是轨道城情报部门的人');
+  $('gm').innerHTML=`<div class="sa" style="background:#1a0a15"><div style="color:var(--orange);font-size:13px">情报获取</div></div><div class="nr" id="nn"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s11()">离开铁锈湾</button></div>${rInv()}${rClue()}`;
+  typeT($('nn'),isC('vera')?'你用审讯话术让他说漏了嘴——他不是买家，是轨道城情报部的线人。\n\n"7号舱有人等着。但GATE-7那边已经布了人。小心。"':'你请他喝了杯合成威士忌套出了情报。他来自轨道城情报部。\n\n"GATE-7那边有人盯着，小心点。"');
+}
+function s10_friend(){G.dec.rust='friend';addClue('银衣人是情报部线人');
+  $('gm').innerHTML=`<div class="sa" style="background:#1a0a15"><div style="color:var(--green);font-size:13px">老朋友网络</div></div><div class="nr" id="nf"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s11()">离开铁锈湾</button></div>${rInv()}${rClue()}`;
+  typeT($('nf'),'你给老吴发了加密消息。三分钟后回复来了：\n\n"银衣服那个？情报部的，别惹。GATE-7有人等着搜你，走C通道，我帮你打过招呼了。"\n\n老朋友就是好用。');
+}
+
+// === 场景11: 追踪者伏击 + 消耗点4 ===
+function s11(){
+  checkMeds();mod('time',-8);
+  $('gm').innerHTML=`<div class="sa" style="background:#1a0505"><div style="color:var(--red);font-size:14px;animation:bk .6s infinite">⚠ 追踪警报</div></div><div class="nr" id="n11"></div><div class="msg"></div><div class="ch" id="c11"></div>${rInv()}${rClue()}`;
+  typeT($('n11'),'穿梭机刚脱离铁锈湾，雷达上亮起两个红点——有人跟上来了！',()=>{
+    let ch='';
+    if(has('信号干扰器'))ch+=`<button class="btn" onclick="s11_jam()">启动信号干扰器隐身</button>`;
+    if(isC('chen'))ch+=`<button class="btn" onclick="s11_asteroid()">钻进小行星带躲藏（你知道安全路线）</button>`;
+    if(isC('seven'))ch+=`<button class="btn" onclick="s11_hack()">入侵追踪者通讯系统</button>`;
+    if(isC('zero'))ch+=`<button class="btn" onclick="s11_disguise()">用伪装帽改造信号特征</button>`;
+    if(isC('vera'))ch+=`<button class="btn" onclick="s11_confront()">打开通讯频道，直接对峙</button>`;
+    if(isC('eun'))ch+=`<button class="btn" onclick="s11_eun()">追踪者的飞船好像冒烟了……他们可能需要帮助</button>`;
+    ch+=`<button class="btn btn-warn" onclick="s11_run()">⚠ 全力加速逃跑</button>`;
+    $('c11').innerHTML=ch;
+  });
+}
+function s11_jam(){rmItem('信号干扰器');sysMsg('[ 信号干扰器已消耗 ] 成功隐身','msg-info');s11_after()}
+function s11_asteroid(){addClue('小行星带里有秘密中转站');s11_after()}
+function s11_hack(){addClue('追踪者收到指令：不惜代价拦截箱子');s11_after()}
+function s11_disguise(){s11_after()}
+function s11_confront(){G.dec.vera_talked_friend=true;addClue('追踪者的上级是轨道城安全委员会');mod('stress',10);s11_after()}
+function s11_eun(){G.dec.eun_saved_chaser=true;addClue('追踪者也是被雇的，不知道箱子里是什么');mod('hp',-5);s11_after()}
+function s11_run(){mod('hp',-20);mod('stress',15);s11_after()}
+
+function s11_after(){
+  // 强制消耗点4：冷静检查
+  const hasMed=has('急救包');
+  const hasSed=has('镇静剂');
+  setTimeout(()=>{
+    $('gm').innerHTML=`<div class="sa" style="background:#050508"><div style="color:var(--dim);font-size:13px">脱离追踪</div></div><div class="nr" id="n11a"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s12()">前往GATE-7</button></div>${rInv()}${rClue()}`;
+    let txt='逃脱追踪者后，你的手在发抖，心跳加速。\n\n';
+    if(hasMed){rmItem('急救包');mod('hp',50);txt+='你打开急救包给自己处理了伤口，恢复了不少体力。';}
+    else if(hasSed){rmItem('镇静剂');mod('stress',-20);txt+='你给自己注了一针镇静剂。呼吸慢慢平稳下来。';}
+    else{mod('stress',20);txt+='没有任何药物可以缓解。你只能深呼吸，告诉自己冷静。但手还是在抖。';}
+    typeT($('n11a'),txt);
+  },800);
+}
+
+// === 场景12: GATE-7 ===
+function s12(){
+  checkMeds();mod('time',-5);mod('stress',10);
+  $('gm').innerHTML=`<div class="sa" style="background:linear-gradient(180deg,#0a0f1a,#050508)"><div style="width:180px;height:100px;border:2px solid rgba(0,212,255,.3);display:flex;align-items:center;justify-content:center;position:relative"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:bk 1.5s infinite"></div><div style="font-size:18px;color:var(--cyan);letter-spacing:4px">GATE-7</div></div></div><div class="nr" id="n12"></div><div class="msg"></div><div class="ch" id="c12"></div>${rInv()}${rClue()}`;
+  typeT($('n12'),'GATE-7——进入轨道城的最后一道关卡。\n\n执法官正在扫描你的穿梭机。你保持镇定。\n\n就在你以为一切顺利的时候——货舱里传来一声微弱的哭声。\n\n不是机械声。是婴儿的哭声。\n\n执法官的表情变了。"打开货舱。"',()=>{
+    let ch='';
+    if(has('伪造货运单'))ch+=`<button class="btn" onclick="s12_papers()">"实验用哺乳动物，这是文件。"</button>`;
+    if(isC('vera'))ch+=`<button class="btn" onclick="s12_badge()">亮出执法徽章，用官方口吻要求放行</button>`;
+    if(isC('vera')&&G.dec.vera_talked_friend)ch+=`<button class="btn" onclick="s12_old_friend()">那个执法官……是你的前同事</button>`;
+    if(isC('seven'))ch+=`<button class="btn" onclick="s12_hack()">入侵检查系统，制造全线故障</button>`;
+    if(isC('chen')&&G.dec.rust==='friend')ch+=`<button class="btn" onclick="s12_cpass()">走老吴说的C通道</button>`;
+    if(isC('eun'))ch+=`<button class="btn" onclick="s12_medical()">用伪造医疗证件："紧急器官转运！"</button>`;
+    if(has('贿赂金'))ch+=`<button class="btn" onclick="s12_bribe()">塞钱给他</button>`;
+    ch+=`<button class="btn" onclick="s12_talk()">冷静解释，试着说服</button>`;
+    ch+=`<button class="btn btn-warn" onclick="s12_force()">⚠ 强行闯关</button>`;
+    $('c12').innerHTML=ch;
+  });
+}
+function s12_papers(){rmItem('伪造货运单');mod('stress',10);s12p('执法官翻看了货运单。"实验用动物？"\n\n"是的，运往7号舱实验室。活体需要保温，请不要打开密封。"\n\n他犹豫了几秒，摆手让你过去了。你的手心全是汗。')}
+function s12_badge(){mod('stress',5);s12p('"特别行动。货物分级保密。你没有权限查看。"\n\n执法官盯着徽章看了三秒。徽章已经停用了，但外表完好。\n\n"……通过。"\n\n他记住了你的脸。')}
+function s12_old_friend(){G.dec.vera_gate_friend=true;s12p('你认出了他——你的前同事，李铮。\n\n"你怎么会在这里？""我还想问你。"\n\n沉默。他看了一眼你的货舱，又看了看你。\n\n"走吧。我什么都没看到。"\n\n你点了点头。有些东西不需要说出来。')}
+function s12_hack(){mod('time',-12);mod('stress',15);s12p('三秒钟，GATE-7扫描系统报了一串错误。所有通道红灯闪烁。\n\n"系统故障！全员检查！"\n\n你趁乱滑进通道。警报十分钟后会恢复——够了。但他们会查到是谁干的。')}
+function s12_cpass(){s12p('你把穿梭机拐进C通道。灯光昏暗，没有执法官。\n\n老吴确实打过招呼了。五分钟后你已经在轨道城内环了。\n\n有些债，用人情还比用钱好。')}
+function s12_medical(){mod('stress',5);s12p('"紧急器官转运！延误导致器官失活，你负得起这个责吗？"\n\n你掏出伪造医疗证件，语气专业到毋庸置疑。执法官犹豫了——没人想承担耽误医疗的责任。\n\n"……通过。快走。"')}
+function s12_bribe(){rmItem('贿赂金');s12p('你不动声色地在证件夹里塞了一叠现金。\n\n执法官低头看了一眼。"……过去吧。"\n\n在这里，一切都有价格。')}
+function s12_talk(){
+  if(G.stress>70)return badEnd('silence');
+  mod('stress',10);s12p('你深吸一口气。\n\n"长官，这是紧急医疗转运。打开密封可能导致样本死亡，我承担不起——您也承担不起。"\n\n执法官沉默了几秒。"……下次把文件准备好。"');
+}
+function s12_force(){
+  if(!has('燃料备用罐')&&!G.bought.fuel){return badEnd('burnout')}
+  mod('hp',-25);mod('stress',20);mod('time',-10);
+  s12p('你踩下加速踏板。追踪导弹锁定警告响了。引擎爆发最后的力量——穿梭机像子弹射进航道。\n\n追踪导弹被防御系统拦截——他们不会在自己城市上空开火。\n\n你浑身是汗。但你过来了。');
+}
+function s12p(txt){
+  $('gm').innerHTML=`<div class="sa" style="background:linear-gradient(180deg,#051a0f,#050508)"><div style="color:var(--green);font-size:14px;letter-spacing:3px">ACCESS GRANTED</div></div><div class="nr" id="n12p"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s13()">前往轨道城7号舱</button></div>${rInv()}${rClue()}`;
+  typeT($('n12p'),txt);
+}
+
+// === 场景13: 最终选择 + 结局 ===
+function s13(){
+  $('sbar').classList.add('hidden');
+  $('gm').innerHTML=`<div class="sa" style="background:radial-gradient(ellipse at top,#0a1628,#050508)"><div style="font-size:18px;color:var(--cyan);text-shadow:0 0 15px var(--cyan);letter-spacing:4px">7号舱</div></div><div class="nr" id="n13"></div><div class="msg"></div><div class="ch" id="c13"></div>`;
+  typeT($('n13'),'对接成功。轨道城7号舱的气密门缓缓打开。\n\n距离你出发已经过去了很久。箱子安静地在你身后。\n\n这是你最后的选择。',()=>{
+    let ch=`<button class="btn" onclick="s13_deliver()">按原计划送达</button>`;
+    if(!G.openedBox)ch+=`<button class="btn" onclick="s9_open_final()">打开箱子看看里面是什么</button>`;
+    if(G.openedBox){
+      if(isC('zero'))ch+=`<button class="btn" onclick="s13_zero()">她和我一样，没人要她。我来养她。</button>`;
+      if(isC('chen')&&G.hp<30)ch+=`<button class="btn" onclick="s13_chen()">把穿梭机和箱子交给接头人。我留在这里就好。</button>`;
+      if(isC('vera')&&G.dec.vera_gate_friend)ch+=`<button class="btn" onclick="s13_vera()">带着证据回到执法系统。这次站在正确的一边。</button>`;
+      if(isC('seven')&&G.clues.length>=4)ch+=`<button class="btn" onclick="s13_seven()">入侵轨道城广播系统，让所有人听到真相。</button>`;
+      if(isC('eun')&&G.dec.eun_gene_discovery)ch+=`<button class="btn" onclick="s13_eun()">带着基因数据回地面，公开研究。</button>`;
+      ch+=`<button class="btn btn-warn" onclick="badEnd('betray')">⚠ 联系追踪者，把箱子交给他们</button>`;
+    }
+    $('c13').innerHTML=ch;
+  });
+}
+function s9_open_final(){
+  G.openedBox=true;
+  $('gm').innerHTML=`<div class="sa" style="background:#1a1520"></div><div class="nr" id="nof"></div><div class="msg"></div><div class="ch"><button class="btn" onclick="s13()">做出你的选择</button></div>`;
+  typeT($('nof'),'你撬开了冷焊封口。\n\n里面是一个婴儿。活着的，温暖的，安静地看着你。\n\n你运的是一个人。\n\n现在你知道了。你要怎么做？');
+}
+function s13_deliver(){
+  let score=0;
+  if(G.dec.l9_save)score+=3;
+  if(G.dec.l9==='dock')score+=1;
+  if(G.dec.l9==='scan')score+=1;
+  if(G.clues.length>=3)score+=2;
+  if(G.clues.length>=5)score+=1;
+  if(G.hp>30)score+=1;
+  if(G.dec.helped_refugees)score+=1;
+  const isHidden=G.clues.length>=4&&G.dec.l9_save&&G.openedBox;
+  if(isHidden){
+    goodEnd('真相','接头人打开了箱子。一个婴儿。活着的。\n\n"她的基因里携带着<span class="hl">轨道城的核心密钥</span>。只要她活着，他们的封锁就不是铁板一块。"\n\n接头人是地下组织「渡口」的人。你运的不是货物——是<span class="pk">希望</span>。\n\n"你愿意加入我们吗？"\n\n你看了看那双眼睛。也许这不是结束。');
+  }else if(score>=6){
+    goodEnd('摆渡人','7号舱的对接口打开了。一个女人在等着。\n\n她打开箱子时双手在颤抖。是一个婴儿。温暖的、活着的。\n\n她紧紧抱住了她，泪水无声地落下。\n\n你不知道为什么这个孩子必须被偷偷送出去。但<span class="hl">她活下来了。这已经够了。</span>\n\n债务清了。穿梭机缓缓驶离。你回头看了一眼——那里有一扇亮着灯的窗。');
+  }else if(score>=3){
+    goodEnd('代价','送达了。但你消耗殆尽。倒在停机坪上。远处婴儿在哭。\n\n有人跑过来。"他还活着吗？""还在呼吸。"\n\n你不知道他们说的是你还是婴儿。也许都是。\n\n<span class="pk">你付出了所有。</span>');
+  }else{
+    goodEnd('幸存者','箱子交出去了。债清了。\n\n你没有问箱子里是什么。你不想知道。\n\n穿梭机里很安静。星空在窗外转动。\n\n你活下来了。这就是今晚唯一确定的事。');
+  }
+}
+function s13_zero(){goodEnd('守护','你看着箱子里的婴儿。\n\n"她和我一样。没有人要她。"\n\n你把她抱起来。她的手指抓住了你的衣角。\n\n你没有把箱子交给任何人。你带着她消失在星港的人群中。\n\n<span class="hl">两个没人要的生命，找到了彼此。</span>')}
+function s13_chen(){goodEnd('最后一班','陈叔把穿梭机和箱子交给了接头人。\n\n"帮我把她送好。"\n\n他靠在对接口的墙壁上，看着穿梭机被开走。20年了。这是最后一班。\n\n<span class="hl">也是最好的一班。</span>')}
+function s13_vera(){goodEnd('回归','薇拉带着证据回到了执法系统。\n\n她重新穿上了制服。这一次，她知道自己站在哪一边。\n\n"轨道城不是铁板一块。总有人在做对的事。"\n\n<span class="hl">包括她自己。</span>')}
+function s13_seven(){goodEnd('广播','阿七入侵了轨道城广播系统。全城的屏幕同时亮起。\n\n婴儿的哭声在每一个角落回荡。紧接着是数据——基因清除计划的全部文件。\n\n系统崩了3分钟。但3分钟够了。<span class="hl">真相不需要太长时间。</span>')}
+function s13_eun(){goodEnd('医者','朴恩带着基因数据回到了地面。\n\n她不再是非法医生。她是第一个公开说出真相的科学家。\n\n"每一个生命都值得被记录。"\n\n<span class="hl">她的论文标题是：「第八号样本——致那个活下来的孩子」</span>')}
+
+// === 启动 ===
+s0();
+</script>
+</body>
+</html>

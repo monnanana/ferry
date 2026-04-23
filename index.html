@@ -428,10 +428,19 @@ function typewrite(elId,text,cb,speed=20){
   el.innerHTML='';
   let i=0;
   if(twTimer)clearInterval(twTimer);
+  // 用 DOM 节点追加代替 innerHTML+=，避免移动端每字重新解析布局导致撑宽
+  let curTextNode=document.createTextNode('');
+  el.appendChild(curTextNode);
   twTimer=setInterval(()=>{
     if(i<text.length){
       const ch=text[i];
-      el.innerHTML+=ch==='\n'?'<br>':ch;
+      if(ch==='\n'){
+        el.appendChild(document.createElement('br'));
+        curTextNode=document.createTextNode('');
+        el.appendChild(curTextNode);
+      }else{
+        curTextNode.nodeValue+=ch;
+      }
       i++;
     }else{clearInterval(twTimer);twTimer=null;if(cb)cb();}
   },speed);
@@ -1351,7 +1360,7 @@ function showEnding(type){
   if(['pyrrhic','failure','success'].includes(type)){
     const costs=[];
     const hpLost=100-G.hp;
-    const timeLost=120-G.time;
+    const timeLost=90-G.time;
     const moneyLost=(G.role==='chen'?140:G.role==='vera'?100:G.role==='zero'?80:G.role==='seven'?90:90)-G.money;
     if(hpLost>=60) costs.push('体力几乎耗尽');
     else if(hpLost>=35) costs.push('体力大量消耗');

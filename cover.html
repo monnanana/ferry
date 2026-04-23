@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #000;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+
+  /* 背景渐变 */
+  .bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 100%, #1a0a3a 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, #0d1f3a 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 20%, #0a1a2e 0%, transparent 50%),
+      linear-gradient(180deg, #050810 0%, #0a0d1a 40%, #0d0520 100%);
+  }
+
+  /* 扫描线 */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* 城市轮廓 */
+  .city {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 280px;
+  }
+  .city svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 雾气 */
+  .fog {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(
+      0deg,
+      rgba(60, 20, 100, 0.4) 0%,
+      rgba(20, 40, 80, 0.2) 50%,
+      transparent 100%
+    );
+    filter: blur(8px);
+  }
+
+  /* 霓虹光晕 - 底部 */
+  .glow-bottom {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 60px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(0, 200, 255, 0.08) 20%,
+      rgba(180, 0, 255, 0.15) 50%,
+      rgba(0, 200, 255, 0.08) 80%,
+      transparent 100%
+    );
+    filter: blur(20px);
+  }
+
+  /* 飞船 */
+  .shuttle {
+    position: absolute;
+    top: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    filter: drop-shadow(0 0 20px rgba(0, 200, 255, 0.6)) drop-shadow(0 0 40px rgba(0, 200, 255, 0.3));
+  }
+
+  /* 飞船引擎光 */
+  .engine-glow {
+    position: absolute;
+    top: 118px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 50px;
+    background: linear-gradient(0deg, transparent, rgba(0, 200, 255, 0.8), rgba(100, 220, 255, 1));
+    filter: blur(6px);
+    border-radius: 50%;
+  }
+
+  /* 星星 */
+  .stars {
+    position: absolute;
+    inset: 0;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+  }
+
+  /* 主标题区 */
+  .title-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 100%;
+  }
+
+  .subtitle-top {
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: rgba(0, 200, 255, 0.7);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .title-cn {
+    font-size: 88px;
+    font-weight: 900;
+    letter-spacing: 20px;
+    color: #fff;
+    text-shadow:
+      0 0 20px rgba(0, 200, 255, 0.8),
+      0 0 60px rgba(0, 200, 255, 0.4),
+      0 0 100px rgba(180, 0, 255, 0.3);
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .title-en {
+    font-size: 16px;
+    letter-spacing: 8px;
+    color: rgba(180, 0, 255, 0.9);
+    text-shadow: 0 0 10px rgba(180, 0, 255, 0.8);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,200,255,0.6), transparent);
+    margin: 0 auto 20px;
+  }
+
+  .tagline {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: rgba(200, 200, 220, 0.6);
+    line-height: 1.8;
+  }
+
+  /* 角落装饰 */
+  .corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+  }
+  .corner-tl { top: 20px; left: 20px; border-top: 1px solid rgba(0,200,255,0.5); border-left: 1px solid rgba(0,200,255,0.5); }
+  .corner-tr { top: 20px; right: 20px; border-top: 1px solid rgba(0,200,255,0.5); border-right: 1px solid rgba(0,200,255,0.5); }
+  .corner-bl { bottom: 20px; left: 20px; border-bottom: 1px solid rgba(0,200,255,0.5); border-left: 1px solid rgba(0,200,255,0.5); }
+  .corner-br { bottom: 20px; right: 20px; border-bottom: 1px solid rgba(0,200,255,0.5); border-right: 1px solid rgba(0,200,255,0.5); }
+
+  /* 年份标签 */
+  .year-tag {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(180,0,255,0.6);
+    border: 1px solid rgba(180,0,255,0.3);
+    padding: 3px 12px;
+    border-radius: 2px;
+  }
+
+  /* 底部信息 */
+  .bottom-info {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(100,120,150,0.5);
+    white-space: nowrap;
+  }
+
+  /* 雨线效果 */
+  .rain {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .rain-line {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(0deg, transparent, rgba(0,200,255,0.15), transparent);
+    animation: fall linear infinite;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-100px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(730px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<!-- 雨线 -->
+<div class="rain" id="rain"></div>
+
+<!-- 星星 -->
+<div class="stars" id="stars"></div>
+
+<!-- 城市轮廓 -->
+<div class="city">
+  <svg viewBox="0 0 1200 280" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cityGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1a0a3a" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#0a0515" stop-opacity="1"/>
+      </linearGradient>
+      <linearGradient id="neonH" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="transparent"/>
+        <stop offset="50%" stop-color="rgba(0,200,255,0.3)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </linearGradient>
+    </defs>
+    <!-- 远景建筑 -->
+    <rect x="0" y="120" width="60" height="160" fill="url(#cityGrad)"/>
+    <rect x="55" y="80" width="40" height="200" fill="url(#cityGrad)"/>
+    <rect x="90" y="100" width="30" height="180" fill="url(#cityGrad)"/>
+    <rect x="115" y="60" width="50" height="220" fill="url(#cityGrad)"/>
+    <rect x="160" y="90" width="35" height="190" fill="url(#cityGrad)"/>
+    <rect x="190" y="50" width="45" height="230" fill="url(#cityGrad)"/>
+    <rect x="230" y="110" width="25" height="170" fill="url(#cityGrad)"/>
+    <rect x="250" y="70" width="55" height="210" fill="url(#cityGrad)"/>
+    <rect x="300" y="40" width="40" height="240" fill="url(#cityGrad)"/>
+    <rect x="335" y="100" width="30" height="180" fill="url(#cityGrad)"/>
+    <rect x="360" y="30" width="60" height="250" fill="url(#cityGrad)"/>
+    <rect x="415" y="80" width="35" height="200" fill="url(#cityGrad)"/>
+    <rect x="445" y="60" width="45" height="220" fill="url(#cityGrad)"/>
+    <rect x="485" y="90" width="30" height="190" fill="url(#cityGrad)"/>
+    <!-- 中间空出飞船位置 -->
+    <rect x="640" y="90" width="30" height="190" fill="url(#cityGrad)"/>
+    <rect x="665" y="60" width="45" height="220" fill="url(#cityGrad)"/>
+    <rect x="705" y="80" width="35" height="200" fill="url(#cityGrad)"/>
+    <rect x="735" y="30" width="60" height="250" fill="url(#cityGrad)"/>
+    <rect x="790" y="100" width="30" height="180" fill="url(#cityGrad)"/>
+    <rect x="815" y="40" width="40" height="240" fill="url(#cityGrad)"/>
+    <rect x="850" y="70" width="55" height="210" fill="url(#cityGrad)"/>
+    <rect x="900" y="110" width="25" height="170" fill="url(#cityGrad)"/>
+    <rect x="920" y="50" width="45" height="230" fill="url(#cityGrad)"/>
+    <rect x="960" y="90" width="35" height="190" fill="url(#cityGrad)"/>
+    <rect x="990" y="60" width="50" height="220" fill="url(#cityGrad)"/>
+    <rect x="1035" y="100" width="30" height="180" fill="url(#cityGrad)"/>
+    <rect x="1060" y="80" width="40" height="200" fill="url(#cityGrad)"/>
+    <rect x="1095" y="50" width="35" height="230" fill="url(#cityGrad)"/>
+    <rect x="1125" y="90" width="45" height="190" fill="url(#cityGrad)"/>
+    <rect x="1165" y="70" width="35" height="210" fill="url(#cityGrad)"/>
+
+    <!-- 窗户小点 -->
+    <g fill="rgba(0,200,255,0.4)" opacity="0.6">
+      <rect x="62" y="90" width="3" height="2"/><rect x="68" y="90" width="3" height="2"/>
+      <rect x="120" y="70" width="3" height="2"/><rect x="126" y="70" width="3" height="2"/><rect x="120" y="78" width="3" height="2"/>
+      <rect x="195" y="60" width="3" height="2"/><rect x="201" y="60" width="3" height="2"/><rect x="195" y="68" width="3" height="2"/>
+      <rect x="305" y="50" width="3" height="2"/><rect x="311" y="50" width="3" height="2"/>
+      <rect x="365" y="40" width="3" height="2"/><rect x="371" y="40" width="3" height="2"/><rect x="365" y="48" width="3" height="2"/>
+    </g>
+    <g fill="rgba(255,150,0,0.5)" opacity="0.5">
+      <rect x="98" y="108" width="2" height="2"/><rect x="103" y="108" width="2" height="2"/>
+      <rect x="258" y="80" width="2" height="2"/><rect x="263" y="80" width="2" height="2"/>
+      <rect x="450" y="68" width="2" height="2"/>
+    </g>
+
+    <!-- 霓虹横线 -->
+    <rect x="0" y="195" width="1200" height="1" fill="url(#neonH)" opacity="0.4"/>
+
+    <!-- 地面 -->
+    <rect x="0" y="220" width="1200" height="60" fill="#0a0515" opacity="0.8"/>
+  </svg>
+</div>
+
+<div class="fog"></div>
+<div class="glow-bottom"></div>
+
+<!-- 飞船SVG -->
+<svg class="shuttle" viewBox="0 0 180 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hullGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b0d8ff"/>
+      <stop offset="50%" stop-color="#4090c0"/>
+      <stop offset="100%" stop-color="#1a3a5a"/>
+    </linearGradient>
+    <linearGradient id="engineGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00c8ff"/>
+      <stop offset="100%" stop-color="#0060ff"/>
+    </linearGradient>
+  </defs>
+  <!-- 主船体 -->
+  <ellipse cx="90" cy="38" rx="75" ry="18" fill="url(#hullGrad)" stroke="#00c8ff" stroke-width="0.5"/>
+  <!-- 驾驶舱穹顶 -->
+  <ellipse cx="105" cy="30" rx="25" ry="12" fill="rgba(0,180,255,0.3)" stroke="#00c8ff" stroke-width="0.8"/>
+  <!-- 左翼 -->
+  <path d="M30 38 L10 55 L50 50 Z" fill="#1a3a6a" stroke="#00c8ff" stroke-width="0.5"/>
+  <!-- 右翼 -->
+  <path d="M150 38 L170 55 L130 50 Z" fill="#1a3a6a" stroke="#00c8ff" stroke-width="0.5"/>
+  <!-- 引擎 -->
+  <ellipse cx="25" cy="42" rx="8" ry="4" fill="url(#engineGrad)" opacity="0.8"/>
+  <ellipse cx="155" cy="42" rx="8" ry="4" fill="url(#engineGrad)" opacity="0.8"/>
+  <!-- 箱子轮廓（货舱暗示） -->
+  <rect x="75" y="44" width="18" height="12" rx="1" fill="#0a1a2a" stroke="rgba(0,200,255,0.4)" stroke-width="0.5"/>
+  <!-- 线条装饰 -->
+  <line x1="40" y1="38" x2="140" y2="38" stroke="rgba(0,200,255,0.2)" stroke-width="0.5"/>
+</svg>
+
+<div class="engine-glow"></div>
+
+<!-- 角落装饰 -->
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<!-- 年份标签 -->
+<div class="year-tag">2147 · FEDERATION BLOCKADE</div>
+
+<!-- 标题区 -->
+<div class="title-area" style="top:42%">
+  <div class="subtitle-top">一只箱子 · 一段飞行 · 一个决定</div>
+  <div class="title-cn">摆渡人</div>
+  <div class="title-en">The Last Ferryman</div>
+  <div class="divider"></div>
+  <div class="tagline">封锁星域，禁止通行<br>有些货物，比命更重</div>
+</div>
+
+<!-- 底部 -->
+<div class="bottom-info">INTERACTIVE NARRATIVE · H5 GAME · 2025</div>
+
+<div class="scanlines"></div>
+
+<script>
+  // 生成星星
+  const starsEl = document.getElementById('stars');
+  for(let i=0;i<120;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random()<0.1 ? 2 : 1;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*60}%;left:${Math.random()*100}%;opacity:${0.3+Math.random()*0.7}`;
+    starsEl.appendChild(s);
+  }
+  // 生成雨线
+  const rainEl = document.getElementById('rain');
+  for(let i=0;i<30;i++){
+    const r = document.createElement('div');
+    r.className = 'rain-line';
+    const h = 40+Math.random()*80;
+    r.style.cssText = `left:${Math.random()*100}%;height:${h}px;animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*3}s`;
+    rainEl.appendChild(r);
+  }
+</script>
+</body>
+</html>
