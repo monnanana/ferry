@@ -486,6 +486,7 @@ function confirmRole(){
   G.oxygenUsed=false;G.fuelChecked=false;G.lastCrisis=false;G.passedRest1=false;
   _dtrig=false;_ctrig=false;_strig=false;
   Object.entries(r.starter).forEach(([k,v])=>addItem(k,v));
+  updateStats();
   goScreen('story');
   startPrologue();
 }
