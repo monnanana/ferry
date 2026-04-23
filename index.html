@@ -491,7 +491,7 @@ function confirmRole(){
   if(!selectedRole){alert('请先选择角色！');return;}
   const r=ROLES[selectedRole];
   G.role=selectedRole;G.hp=r.hp;G.money=r.money;
-  G.items={};G.clues=[];G.alert=1;G.time=90;
+  G.items={};G.clues=[];G.alert=1;G.time=100;
   G.choices={heardBox:undefined,toldFather:undefined,helpedOldMan:undefined,ignoredOldMan:undefined,forChild:undefined,clientCancelled:undefined,rejectedClient:undefined,betrayedBaby:undefined,slowedEngine:undefined,babySedated:false,babyIgnored:false,forChildScore:false};
   G.oxygenUsed=false;G.fuelChecked=false;G.lastCrisis=false;G.passedRest1=false;
   _dtrig=false;_ctrig=false;_strig=false;
@@ -767,7 +767,7 @@ function scene5_checkpoint_passage(route){
       scene6_rest1('你把口袋里最后一点零钱都掏了出来——明显不够。\n执法官眯起眼睛，叫来了同事。\n盘问了二十分钟，最终放行，但你被记了一笔。');
     }else{modMoney(-50);scene6_rest1('贿赂顺利通过，他连箱子都没看一眼。');}
   }});
-  if(G.role==='zero') choices.push({title:'藏进旁边的货柜缝隙',hint:'隐身披风遮住自己和箱子，等检查结束',cost:'⏱ 时间 -10min',special:true,action:()=>{if(modTime(-10))return;scene6_rest1('你蜷缩在货柜暗处，连呼吸都屏住了。\n执法官的手电扫了几遍，最终懒得细查，放行了。');}});
+  if(G.role==='zero') choices.push({title:'藏进旁边的货柜缝隙',hint:'隐身披风遮住自己和箱子，等检查结束',cost:'⏱ 时间 -5min',special:true,action:()=>{if(modTime(-5))return;scene6_rest1('你蜷缩在货柜暗处，连呼吸都屏住了。\n执法官的手电扫了几遍，最终懒得细查，放行了。');}});
   if(G.role==='chen') choices.push({title:'联系内线走内部渠道',hint:'用人脉通讯器找老朋友开绿灯，用完就销号了',cost:'人脉通讯器 -1 · ¥50'+(G.money<50?' （不足，老朋友会不高兴）':'')+(hasItem('人脉通讯器')?'':' · 无通讯器'),special:true,disabled:!hasItem('人脉通讯器'),action:()=>{
     useItem('人脉通讯器'); // 用完销号，这个人情只能用一次
     if(G.money<50){
@@ -919,7 +919,7 @@ function scene8_contact(){
   if(ended())return;
   if(modHP(-10))return;if(ended())return;
   const roleChoices={
-    zero:{title:'零专属：躲起来观察',hint:'用隐身披风悄悄评估对方意图',cost:'⏱ 时间 -5min · 获得线索，无风险',special:true,action:()=>{if(modTime(-5))return;G.clues.push('陌生人情报');showScene('// 观察结果','你躲在信号盲区，静静地看了他五分钟。\n他不是联邦的人——肯定不是。动作太紧张，眼神太害怕。\n他只是另一个想活下去的人。\n你获得了「陌生人情报」。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);}},
+    zero:{title:'零专属：躲起来观察',hint:'用隐身披风悄悄评估对方意图',cost:'⏱ 时间 -3min · 获得线索，无风险',special:true,action:()=>{if(modTime(-3))return;G.clues.push('陌生人情报');showScene('// 观察结果','你躲在信号盲区，静静地看了他五分钟。\n他不是联邦的人——肯定不是。动作太紧张，眼神太害怕。\n他只是另一个想活下去的人。\n你获得了「陌生人情报」。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);}},
     chen:{title:'陈叔专属：联系老朋友核实',hint:'用人脉通讯器确认对方身份，用完销号',cost:'人脉通讯器 -1 · 获得线索 + ¥20'+(hasItem('人脉通讯器')?'':' · 无通讯器'),special:true,disabled:!hasItem('人脉通讯器'),action:()=>{useItem('人脉通讯器');G.clues.push('陌生人情报');modMoney(20);showScene('// 老朋友核实','电话那头沉默了三秒：「是自己人，你帮他一把。」\n对方把知道的情报全说了，还转给你二十块路费。\n挂掉电话，号码自动销毁。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);}},
     vera:{title:'维拉专属：以官员身份问询',hint:'用权威逼出情报',cost:'获得情报，警戒不变',special:true,action:()=>{G.clues.push('陌生人情报');showScene('// 问询结果','你用以前的口吻说话——不是请求，是命令。\n对方愣了一秒，然后把知道的全说了。\n你获得了「陌生人情报」。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);}},
     seven:{title:'七专属：扫描通讯频道',hint:'黑客终端分析对方信号',cost:'获得线索，无风险',special:true,disabled:!hasItem('黑客终端'),action:()=>{G.clues.push('陌生人情报');showScene('// 信号分析','他的通讯加密等级很低——业余水平。\n你在三十秒内破解了全部数据，知道了他是谁，他知道什么。\n你获得了「陌生人情报」。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:()=>triggerRandomCrisis(scene9_rest2)}]);}},
@@ -1096,7 +1096,7 @@ function _scene10_inner(){
           else{modMoney(-60);scene11_box();}
         }},
         {title:'强行冲过去',hint:'暴力突破，但代价惨烈',cost:'体力 -20 · 警戒 +1',action:()=>{if(modHP(-20))return;if(modAlert(1))return;scene11_box();}},
-        ...(G.role==='zero'?[{title:'零专属：关闭所有信号漂移',hint:'让飞船从雷达上消失',cost:'⏱ 时间 -10min · 警戒 -1',special:true,action:()=>{if(modTime(-10))return;modAlert(-1);scene11_box();}}]:[]),
+        ...(G.role==='zero'?[{title:'零专属：关闭所有信号漂移',hint:'让飞船从雷达上消失',cost:'⏱ 时间 -5min · 警戒 -1',special:true,action:()=>{if(modTime(-5))return;modAlert(-1);scene11_box();}}]:[]),
         ...(G.role==='chen'?[{title:'陈叔专属：老关系',hint:'认识这家公司的人',cost:'¥80',special:true,disabled:G.money<80,action:()=>{modMoney(-80);scene11_box();}}]:[]),
         ...(G.role==='vera'?[{title:'维拉专属：联邦证件施压',hint:'联邦权威压过私企',cost:'证件 -1次'+(hasItem('联邦证件')?'':'（已用完）'),special:true,disabled:!hasItem('联邦证件'),action:()=>{useItem('联邦证件');scene11_box();}}]:[]),
         ...(G.role==='seven'?[{title:'七专属：入侵巡逻舰导航',hint:'让他们的舰跑偏',cost:'70%成功率',special:true,disabled:!hasItem('黑客终端'),action:()=>{if(Math.random()<0.7){scene11_box();}else{if(modAlert(1))return;if(modHP(-15))return;showScene('// 入侵失败','他们检测到入侵，开了一炮。\n飞船受损，但你还是跑了。'+hpWarning()+timeWarning(),[{title:'继续',action:scene11_box}]);}}}]:[]),
@@ -1188,7 +1188,7 @@ function scene12_gate7(boxMsg){
           [{title:'拼命冲出去',action:()=>{if(modHP(-20))return;scene13_ending();}}]);
         }else{modMoney(-100);scene13_ending();}
       }},
-      ...(G.role==='zero'?[{title:'零专属：通风道最后一次',hint:'最后的隐匿机会',cost:'⏱ 时间 -10min · 完美绕过',special:true,action:()=>{if(modTime(-10))return;scene13_ending();}}]:[]),
+      ...(G.role==='zero'?[{title:'零专属：通风道最后一次',hint:'最后的隐匿机会',cost:'⏱ 时间 -5min · 完美绕过',special:true,action:()=>{if(modTime(-5))return;scene13_ending();}}]:[]),
       ...(G.role==='chen'&&G.clues.includes('内鬼名单')?[{title:'陈叔专属：用内鬼名单要挟',hint:'你知道他们内部有谁是叛徒',cost:'⏱ 时间 -15min · 警戒 -1',special:true,action:()=>{if(modTime(-15))return;G.alert=Math.max(G.alert-1,1);scene13_ending();}}]:[]),
       ...(G.clues.includes('陌生人情报')?[{title:'用情报换通行——那个陌生人的信息',hint:'你一直没用上的那份情报，现在有用了',cost:'警戒 -1 · ⏱ 时间 -10min',action:()=>{G.alert=Math.max(G.alert-1,1);if(modTime(-10))return;scene13_ending();}}]:[]),
       ...(G.clues.includes('废弃区有人活动')?[{title:'声称发现废弃区异常活动，申请紧急通道',hint:'用你掌握的情报换优先通行权',cost:'⏱ 时间 -10min · 跳过扫描',action:()=>{if(modTime(-10))return;scene13_ending();}}]:[]),
@@ -1363,7 +1363,7 @@ function showEnding(type){
     // [FIX] 从ROLES读初始值，避免角色数据改动后这里失准
     const initHp=(ROLES[G.role]||{hp:100}).hp;
     const initMoney=(ROLES[G.role]||{money:90}).money;
-    const initTime=90;
+    const initTime=100;
     const hpLost=initHp-G.hp;
     const timeLost=initTime-G.time;
     const moneyLost=initMoney-G.money;
