@@ -1069,7 +1069,7 @@ function _scene9_7_inner(){
     '已经飞了很久了。\n你的眼皮开始打架，意识在清醒和昏沉之间反复横跳。\n操控台上的仪表开始重影——你看到了两个时间显示，两个警戒等级。\n你掐了自己一把，疼痛让你清醒了三秒。只有三秒。\n后面还有最难的路段，你不能就这样撑过去。'+hpWarning()+timeWarning(),
     [
       {title:'吃点东西提神'+(hasItem('食物补给')?'':' （无食物）'),hint:'补充能量驱散疲劳',cost:'食物补给 -1 · 体力 +25',disabled:!hasItem('食物补给'),action:()=>{useItem('食物补给');modHP(25);showScene('// 补充能量','你撕开一包压缩口粮，嚼了几口。味道糟透了，但血糖在上升。\n够用了，够撑过接下来的路程。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:scene10_patrol}]);}},
-      {title:'用急救包兴奋剂'+(hasItem('急救包')?'':' （无急救包）'),hint:'人工清醒，副作用是飞行异常',cost:'急救包 -1 · 体力 +40（净 +25）· 警戒 +1',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');modHP(40);if(modAlert(1))return;showScene('// 兴奋剂起效','注射后十秒，视野变得异常清晰，反应速度快了不少。\n但飞行轨迹略显不稳定——巡逻仪器可能会注意到。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:scene10_patrol}]);}},
+      {title:'用急救包兴奋剂'+(hasItem('急救包')?'':' （无急救包）'),hint:'人工清醒，副作用是飞行异常',cost:'急救包 -1 · 体力 +40 · 警戒 +1',disabled:!hasItem('急救包'),action:()=>{useItem('急救包');modHP(40);if(modAlert(1))return;showScene('// 兴奋剂起效','注射后十秒，视野变得异常清晰，反应速度快了不少。\n但飞行轨迹略显不稳定——巡逻仪器可能会注意到。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:scene10_patrol}]);}},
       {title:'硬撑着继续飞',hint:'靠意志力，但额外消耗体力',cost:'体力额外 -10（总 -25）',action:()=>{if(modHP(-10))return;showScene('// 硬撑','你掐了自己的手臂，让疼痛把你从瞌睡边缘拽回来。\n飞船轨迹有些摇晃，但没有离谱。\n你的身体在沉默地抗议，你假装没听见。'+hpWarning()+timeWarning(),[{title:'继续飞行',action:scene10_patrol}]);}}
     ]
   );
